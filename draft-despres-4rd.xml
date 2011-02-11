@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC2460 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2460.xml">
+<!ENTITY RFC4291 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.4291.xml">
+<!ENTITY RFC1918 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.1918.xml">
+<!ENTITY RFC3513 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3513.xml">
+<!ENTITY I-D.ietf-v6ops-tunnel-loops SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-v6ops-tunnel-loops-00.xml'>
+<!ENTITY I-D.ietf-behave-dns64 SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-behave-dns64-11.xml'>
+<!ENTITY I-D.ietf-softwire-dual-stack-lite SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-softwire-dual-stack-lite-06.xml'>
+<!ENTITY I-D.ietf-behave-v6v4-xlate-stateful SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-behave-v6v4-xlate-stateful-12.xml'>
+<!ENTITY I-D.despres-softwire-sam SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-despres-softwire-sam-01.xml'>
+<!ENTITY I-D.vautrin-softwire-4rd SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-vautrin-softwire-4rd-00.xml'>
+
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc strict="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<rfc category="std" docName="draft-despres-4rd-00"
+     ipr="trust200902">
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+    <title abbrev="IPv4 Residual Deployment">IPv4 Residual Deployment on IPv6 infrastructure</title>
+
+    <author fullname="Remi Despres" initials="R." role="editor" surname="Despres">
+      <organization>RD-IPtech</organization>
+      <address>
+        <postal>
+          <street>3 rue du President Wilson</street>
+          <city>Levallois</city>
+          <country>France</country>
+        </postal>
+        <email>remi.despres@free.fr</email>
+      </address>
+    </author>
+
+    <author fullname="Tetsuya Murakami" initials="T." surname="Murakami">
+      <organization>IP Infusion</organization>
+      <address>
+	<postal>
+          <street>1188 East Arques Avenue</street>
+	  <city>Sunnyvale</city>
+	  <country>USA</country>
+	</postal>
+	<email>tetsuya@ipinfusion.com</email>
+      </address>
+    </author>
+
+    <author fullname="Satoru Matsushima" initials="S." surname="Matsushima">
+      <organization>SoftBank</organization>
+      <address>
+	<postal>
+          <street>1-9-1 Higashi-Shinbashi, Munato-ku</street>
+	  <city>Tokyo</city>
+	  <country>Japan</country>
+	</postal>
+	<email>satoru.matsushima@tm.softbank.co.jp</email>
+      </address>
+    </author>
+
+    <!--  -->
+    <date month="February" year="2011" />
+
+    <area>Internet</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+    <keyword></keyword>
+
+    <abstract>
+      <t>This document specifies an automatic tunneling mechanism
+      for providing IPv4 connectivity service to end users over a
+      service provider's IPv6 network infrastructure. During the
+      long transition period from IPv4-only to IPv6-only, a service
+      porvider's network infrastructure will have to deploy IPv6.
+      But they will also have to maintain some IPv4 connectivity
+      for a number of customers, for both outgoing and incoming
+      connections, and for both customer-individual and shared
+      IPv4 addresses. The 4rd solution (IPv4 Residual Deployment)
+      is designed as a lightweight solution for this.</t> 
+    </abstract>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>During the long transition period from only IPv4 to IPv6,
+      service provider's (SP's) infrastructure network will deploy IPv6.
+      However service provider has not only to offer IPv6 connectivity
+      but also to maintain a residual IPv4 connectivity for outgoing
+      and incoming connections. While some privileged customers will
+      still have individual IPv4 addresses for their IPv4 connectivity,
+      more and more and more others will have only shared IPv4 addresses.</t>
+
+      <t>4rd is a generic solution, for the residual support of global IPv4
+      connectivity across IPv6 network infrastructure. On the tradeoff
+      scale between efficiency of address sharing ratios and simplicity,
+      4rd is on the side of design and operational simplicity. Depending
+      on SP's constraints and policies, 4rd can be used either alone,
+      not NAT being in this case needed in SP's network infrastructure,
+      or in parallel with NAT based solutions that achieve better address
+      sharing ratios such as 
+      <xref target="I-D.ietf-softwire-dual-stack-lite">DS-lite</xref>
+      and
+      <xref target="I-D.ietf-behave-v6v4-xlate-stateful">NAT64</xref>
+      /
+      <xref target="I-D.ietf-behave-dns64">DNS64</xref>
+      .</t>
+    </section>
+
+    <section title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref target="RFC2119">
+      RFC 2119</xref>.</t>
+    </section>
+
+    <section title="Terminology">
+      <t><list hangIndent="22" style="hanging">
+	<t hangText="4rd prefix:">Either IPv4 prefix or address selected by
+        the service provider.  There is one 4rd prefix for a given 4rd domain.
+        An SP may deploy 4rd with a single 4rd domain or multiple 4rd domain.</t>
+
+	<t hangText="4rd Customer Edge (4rd CE):">A device functioning as
+        a Customer Edge router in 4rd domain.  This node has IPv6 interface
+        at CE WAN side, IPv4 interface at CE LAN side and virtual interface
+        of 4rd domain acting as the end-point of 4rd tunnel (IPv4 in IPv6).
+        It may be a host, a router, or both.</t>
+
+	<t hangText="IPv6 mask:">IPv6 prefix.  All IPv6 delegated prefix for
+        all 4rd CEs must be covered by this prefix.</t>
+
+        <t hangText="IPv6 delegated prefix:">IPv6 prefix on CE WAN interface
+        of 4rd CE which is delegated by either RA or DHCP-PD from SP's network
+        infrastructure.  This prefix must be covered by IPv6 mask.</t>
+
+        <t hangText="4rd delegated address:">Either IPv4 address or IPv4 address
+        with a specified port range (A+P address) calculated from the combination
+        of a IPv6 delegated prefix and 4rd base prefix by the 4rd CE</t>
+
+        <t hangText="4rd domain:">A set of 4rd CEs and BRs connected to the same
+        virtual 4rd link.  A service provider may deploy 4rd with either a single
+        4rd domain or multiple 4rd domains.  Each domain requires a separate 4rd
+        prefix.</t>
+
+        <t hangText="CE LAN side:">The functionality of 4rd CE that serves the
+        "Local Area Network (LAN)" or "customer-facing" side of the CE. IPv4
+        is running on the CE LAN side interface.</t>
+
+        <t hangText="CE WAN side:">The functionality of 4rd CE that serves the
+        "Wide Area Network (WAN)" or "Service Provider facing" side of the CE.
+        The CE WAN side is IPv6-only.</t>
+
+        <t hangText="4rd Border Relay (4rd BR):">4rd-enabled router managed by
+        the service provider at the edge of 4rd domain.  A border relay router
+        has IPv4 interface connected to native IPv4 network like the IPv4 Internet,
+        IPv6 interface connected to all 4rd CEs and virtual interface of 4rd domain
+        acting as the end-point of 4rd tunnel (IPv4 in IPv6). A 4rd BR may also be
+        referred to simply as a "BR" within the context of 4rd.</t>
+
+        <t hangText="BR IPv6 address:">The IPv6 address of the 4rd Border Relay
+        for a given 4rd domain.  This IPv6 address is used by the CEs to send
+        packets to a BR in order to reach IPv4 destinations outside of
+        the 4rd domain. </t>
+
+        <t hangText="4rd virtual interface:">Internal multi-point tunnel interface
+        where 4rd encapsulation and decapsulation of IPv4 packets must be done
+        inside of IPv6.</t>
+
+      </list></t>
+
+    </section>
+
+    <section title="4rd Protocol Specification" anchor="4rd-protocol-specification">
+      <section anchor="address-mapping-rule" title="Address Mapping Rule">
+        <t>4rd address mapping rule establishes 1:1 address mapping between IPv6
+        delegated prefix and 4rd delegated address.</t>
+        <t>4rd CE generates 4rd delegated address including IPv4 address and port
+        range from IPv6 delegated prefix. 4rd BR can associate IPv6 delegated prefix
+        on specified 4rd CE with IPv4 destination address and destination port number
+        in received IPv4 packets.</t>
+
+        <t><xref target="address-mapping-rule-fig"></xref> shows the address mapping
+        rule between the IPv6 delegated prefix and the 4rd delegated address. As the
+        prerequisite of 4rd, IPv6 mask and 4rd prefix must be given to all 4rd CEs
+        and 4rd BRs in a specified 4rd domain. IPv6 delegated prefix for all 4rd CEs
+        in the specified 4rd domain must have the same IPv6 mask but must be unique
+        for each 4rd CE. In addition, suffix and interface ID in IPv6 address must
+        be given to all 4rd CEs and 4rd BRs in order to generate 4rd tunnel end-point
+        address.</t>
+
+        <t>Prerequisite parameters:</t>
+
+        <t><list hangIndent="22" style="hanging">
+        <t hangText="IPv6 mask:">The number of high-order bits that are identical across
+        all CEs' IPv6 prefix within a given 4rd domain. For example, if there are 32
+        identical bits (e.g., the internal Ipv6 address range 2001:db8::/32 is being used),
+        IPv6 mask length is equal to 32 and the high-order IPv6 mask length bits are stripped
+        from the IPv6 prefix before constructing the corresponding 4rd delegated address.
+        This must be given to all 4rd CEs and 4rd BRs in the given 4rd domain.</t>
+
+        <t hangText="4rd prefix:">4rd prefix is IPv4 prefix. This must be given to all
+        4rd CEs and 4rd BRs in a specified 4rd domain.</t>
+        </list></t>
+
+        <t>When delegating IPv6 prefix to a 4rd CE in a 4rd domain, the 4rd CE generates
+        4rd delegated address as follow.  First, the 4rd CE retrieves User Identifier,
+        which following IPv6 mask with appropriate length of bits calculated by</t>
+
+        <t><list style="symbols">
+        <t>(IPv6 delegated prefix length - IPv6 mask length)</t>
+        </list></t>
+
+        <t>The User Identification can be embedded in IPv4 address following 4rd prefix.
+        If all User Identifier bits can not be embedded in IPv4 address, the remaining
+        bits must be embedded to the port prefix described in <xref target="port-range"></xref>.
+        This generated IPv4 address may be provided to NAPT on the 4rd CE in order to
+        provide the IPv4 connectivity to all clients on CE LAN side.</t>
+
+        <t>For example, in a 4rd domain, IPv6 mask is given as 2001:db8::/32. 4rd prefix
+        is given as 10.10.0.0/16. If IPv6 delegated prefix is 2001:db8:ABCD::/48 on
+        a specified 4rd CE, the 4rd CE can extract 0xABCD as its User Identifier. 
+        All 16 bits of User Identifier succeeds to be embedded to the rest of IPv4 address.
+        Hence, 4rd CE generates 10.10.171(0xAB).205(0xCD) as its IPv4 address.  In another
+        case, when given delegated IPv6 prefix is 2001:db8:ABCD:EF00::/56 for the 4rd CE,
+        the 4rd CE generates same 10.10.171.205 as its IPv4 address. But there is 8 bits of
+        User Identifier. The remaining bits, 0xEF, of the User Identifier will be embedded
+        as the port prefix described in <xref target="port-range"></xref>.</t>
+
+        <figure align="center" anchor="address-mapping-rule-fig"
+          title="4rd Address Mapping">
+          <preamble></preamble>
+
+          <artwork align="center"><![CDATA[
+<------------------------ IPv6 address(128) ------------------------>
+<-------- IPv6 prefix(64)----------->
+<-- IPv6 delegated prefix -->
++---+---+---+-+-+---+---+---+---+---+---+---+---+---+---+---+---+---+
+|  IPv6 mask  |*|           |suffix |        Interface ID           |
++---+---+---+-+-+---+---+---+---+---+---+---+---+---+---+---+---+---+
+                ^           ^
+                |    User   |
+                | Identifier|
+                v           v
+     +-----+----+---+---+---+---+
+     |4rd prefix|       |   |   |
+     +-----+----+---+---+---+---+
+     <---4rd delegated address-->
+     <----IPv4(32)-----><-------> Port(16)
+                        <---> Port-range Index(1-4)+Port prefix(1-15)
+          ]]></artwork>
+
+        </figure>
+
+        <t><list hangIndent="22" style="hanging">
+        <t hangText="4rd prefix identifier:">the value grater than 0 bit. This value is used
+        as the key for specifying a 4rd base prefix. This describes
+        in <xref target="multiple-4rd-prefix-support"></xref>.</t>
+        </list></t>
+      </section>
+
+      <section anchor="port-range" title="Port-Range">
+        <t>When delegating IPv6 prefix to a specified 4rd CE in a specified 4rd domain, the
+        4rd CE extract its User Identifier as described in <xref target="address-mapping-rule"></xref>.
+        If all bits of the User Identifier can not be embedded to IPv4 address following 4rd prefix,
+        the remaining bits must be embedded as the port prefix.</t>
+
+        <t><xref target="port-range-fig"></xref> shows the port range generated from port range index
+        and port prefix.  In order to eliminate the well-known port from the port range, the port
+        range index (1, 01, 001 or 0001) must be used. The remaining bits of the User Identifier
+        must be embedded as the port prefix following the port range index. If the length of
+        the remaining bits is less than 12 bits, all of 4 port range index (1, 01, 001 and 0001)
+        should be used for the port range. If the length of the remaining bits is 13 bits, 3 port range
+        index (1, 01 and 001) should be used. If the length of the remaining bits is 14 bits,
+        2 port range index (1 and 01) should be used. If the length of the remaining bits is 15 bits,
+        only 1 port range index (1) should be used.  If the length of the remaining bits is greater
+        than 16 bits, 4rd delegated address can not be generated. The generated port-range may be
+        provided to NAPT on 4rd CE in order to provide IPv4 connectivity to all clients on CE LAN side.</t>
+
+        <t>For example, if the User Identifier is 0xABCDEF and 0xABCD can be embedded in IPv4 address,
+        the remaining bits 0xEF must be embedded as the port prefix.  Since the length of the remaining
+        bits, 0xEF, is 8 bits, all of the port range index, 0, 01, 001 and 0001, should be used.
+        Finally, the 4rd CE generates 4 port-ranges, 0xF780 to 0xF7FF, 0x7BC9 to 9x7BFF, 0x3DE0 to
+        0x3DFF and 0x1EF0 to 0x1EFF as shown in <xref target="port-range-fig"></xref>.</t>
+
+        <t>When a 4rd BR in a specified 4rd domain receives IPv4 packets from native IPv4 network,
+        4rd BR can get the part of the User Identifier from its IPv4 destination address described in
+        <xref target="address-mapping-rule"></xref>. Also, the 4rd BR needs to extract the remaining
+        part of the User Identifier from the destination port number. Since the 4rd BR knows the total
+        length of the User Identification as described in <xref target="address-mapping-rule"></xref>,
+        the 4rd BR can know the length of the remaining part of the User identification which must be
+        extracted from the destination port number.  At first, the starting point of the part of the
+        User identification in the destination address must be figured out. For this, the 4rd BR find
+        the first bit which is set to 1 because the port range index is located in the beginning of
+        the destination port. If finding the starting point of the part of the User Identifier,
+        the 4rd BR extracts the remaining part of the User Identification.</t>
+
+        <figure align="center" anchor="port-range-fig"
+          title="Port-range">
+          <preamble></preamble>
+
+          <artwork align="center"><![CDATA[
+             <------- Port (16bit) ---------->
+Port-range   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Index(0001)  |0|0|0|1|1 1 1 0|1 1 1 1|       |    Port-range:
+             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      0x1EF0 - 0x1EFF
+                    /  0xE  /   0xF /
+Port-range   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Index(001)   |0|0|1|1 1 1 0|1 1 1 1|         |    Port-range: 
+             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      0x3DE0 - 0x3DFF
+                  /  0xE  /  0xF  /
+Port-range   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Index(01)    |0|1|1 1 1 0|1 1 1 1|           |    Port-range: 
+             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      0x7BC0 - 0x7BFF
+                /  0xE  /  0xF  /
+Port-range   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Index(1)     |1|1 1 1 0|1 1 1 1|             |    Port-range: 
+             +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+      0xF780 - 0xF7FF
+              /  0xE  /  0xF  /
+Port Prefix  +-+-+-+-+-+-+-+-+
+(e.g, 0xEF)  |1 1 1 0|1 1 1 1|
+             +-+-+-+-+-+-+-+-+
+          ]]></artwork>
+
+        </figure>
+
+      </section>
+
+      <section anchor="packet-encapsulation" title="Packet Encapsulation">
+        <t>A 4rd CE and BR that receives IPv4 packets from IPv4 network checks the validity
+        of its source and destination addresses. It also checks that the packet size is
+        acceptable. If yes, it encapsulates it in an IPv6 packet and forwards it at SP's
+        network infrastructure. The IPv6 destination address is set to 4rd BR in case of
+        4rd CE if the IPv4 destination address in the received packet is not 4rd delegated
+        address. Also the IPv6 destination address is set to the address derived by using
+        the address mapping rule (<xref target="address-mapping-rule"></xref>) in case of
+        4rd CE and 4rd BR if the IPv4 destination address in the received packet is 4rd
+        delegated address.</t>
+
+        <t>The Next-header field of the encapsulating packet is set to "IPv4". (Note: The
+        existed protocol number should be reused for 4rd as well. 4rd can provide the function
+        to transfer IPv4 packets over SP's IPv6 network infrastructure. Hence, Protocol 4, "IPv4",
+        must be used as the Next-header field of the encapsulated packet).</t>
+
+        <t>Symmetrically, a 4rd CE and 4rd BR that receives IPv6 packet from SP's IPv6 network
+        infrastructure checks the validity of source and destination addresses in both its
+        encapsulating and encapsulated packets. It also checks that they are mutually consistent
+        with address mapping rules (described in <xref target="address-mapping-rule"></xref>).
+        If yes, it decapsulates the IPv4 packet contained in the encapsulating packet, and forwards
+        it to its IPv4 interface.</t>
+      </section>
+
+      <section anchor="pmtu-consideration" title="PMTU Consideration">
+        <t>To properly deal with the large size IPv4 datagrams that some applications use,
+        in particular with UDP, precautions are needed because of the important difference
+        between IPv4 and IPv6 treatments of datagram fragmentation, and because ports, that
+        may have to be known in 4rd CEs and BRs, only appear in first fragments of long datagrams.
+        (Since SP's network infrastructure is IPv6, intermediate node discards the packets which
+        are longer than the MTU of next links to be traversed and ends ICMP Packet Too Big ICMPv6
+        error packets back to sources.  However, because all IPv6 links must support all packets
+        up to 1280 octets, such discards are completely avoided by sources that limit each fragment
+        size to 1280 octets when source and destination are not on the same link.).</t>
+
+        <t>To cope with these constraints, a logically simple solution is that 4rd CEs and 4rd BRs
+        reassemble multi-fragment IPv4 datagrams before processing them.  (This function is stateful
+        at the IP layer like the same function in NATs.  But 4rd remains stateless at
+        the transport-connection layer, while NATs are stateful at this layer, and above this layer
+        if they support ALGs.)  After reassembly if applicable, each datagram is processed as
+        a single packet and fragmented again to fit to PMTU in the SP's IPv6 network infrastructure
+        in 4rd CE and 4rd BR before encapsulating in IPv6. After encapsulating each fragmented IPv4
+        packet in IPv6 in 4rd CE and 4rd BR, it is forwarded over SP's IPv6 netowkr infrastructure.</t>
+      </section>
+
+      <section anchor="parameter-acuisition" title="Parameter Acquisition">
+        <t>The method of parameter acquisition at 4rd CE is further study.</t>
+      </section>
+    </section>
+
+    <section anchor="4rd-configuration" title="4rd Configuration">
+      <t>This section defines the relevant protocol parameters used for 4rd. The following
+      constants must be mandatory on both 4rd CE and 4rd BR.</t>
+
+      <t>Common Constants for both 4rd CE and 4rd BR:</t>
+      <t><list hangIndent="22" style="hanging">
+        <t hangText="IPV6_MASK_LEN (length of IPv6 mask):">The prefix length of IPv6 mask. 
+        The IPv6 mask can be gotten from IPv6 delegated prefix by this length.  For example,
+        IPV6_MASK_LEN is given as 32 bits. If the IPv6 delegated prefix is 2001:db8:abcd::/48,
+        2001:db8::/32 can be gotten as IPv6 mask in a specified 4rd domain.</t>
+
+        <t hangText="4RD_PREFIX (4rd prefix of 4rd delegated address):">Either IPv4 prefix or
+        IPv4 address. 4rd delegated address can be generated by using the combination of this
+        prefix and the User Identifier extracted from IPv6 delegated prefix.</t>
+
+        <t hangText="SUFFIX (Suffix of IPv6 prefix):">This valus is used for filling the rest
+        of IPv6 prefix.</t>
+
+        <t hangText="INTERFACE_ID (Interface ID of IPv6 address):">This value is used for
+        filling in the last 64 bits of IPv6 address.</t>
+
+        <t hangText="4RD_BR_ADDRESS (4rd BR address):">This specifies the IPv6 address of
+        4rd BR in a specified 4rd domain.  If the IPv4 destination address is not based
+        on 4rd prefix, 4rd CE forwards the packets to 4rd BR after encapsulating in IPv6.</t>
+      </list></t>   
+
+      <section anchor="behavior-of-4rd-br" title="Behavior of 4rd BR">
+        <section anchor="address-mapping-for-br" title="Address Mapping">
+          <t>There is no need to generate 4rd delegated address at 4rd BR. An IPv6 address
+          facing to SP's IPv6 network infrastructure can be configured by using several
+           methods including static configuration, RA, DHCPv6, etc.</t>
+        </section>
+
+        <section anchor="packet-forwarding-for-br" title="Packet Forwarding">
+          <t>When receiving the encapsulated packets from SP's IPv6 network infrastructure,
+          4rd BR removes IPv6 header and then decapsulates IPv4 packets contained in IPv6
+          packet. After decapsulating, IPv4 packet can be transported to native IPv4
+          network.</t>
+
+          <t>When a 4rd BR in a specified 4rd domain receives IPv4 packets from native
+          IPv4 network, the 4rd BR must associate IPv6 address of the receiver 4rd CE with
+          the IPv4 destination address and destination port number.  Since 4rd prefix is
+          given to the 4rd BR, the 4rd BR can extract the part of User Identifier following
+          4rd prefix from IPv4 destination address.  And 4rd BR can extract the remaining
+          part of User Identifier from the destination port number described in <xref target="port-range"></xref>.
+          Finally, the 4rd BR can generate IPv6 destination address from the combination
+          of the IPv6 mask and this extracted User Identifier.</t>
+
+          <t>For example, in a specified 4rd domain, IPv6 mask is given as 2001:db8::/32.
+          4rd prefix is given as 10.10.0.0/16.  The length of the IPv6 delegated prefix
+          on 4rd CE is given as 56 bits.  In this case, the length of User Identifier can
+          be calculated as 24 bits. If the 4rd BR receives IPv4 packets whose destination
+          address is 100.10.171.205 and destination port is 63360(0xF780), the last 16 bits,
+          0xABCD, of IPv4 destination address can be extracted as the part of its User
+          Identifier and the remaining 8 bits can be extracted from the destination port as
+          0xEF described in <xref target="port-range"></xref>. Finally, 4rd BR can generate
+          2001:db8:abcd:ef00::/56 as IPv6 delegated prefix of the receiver 4rd CE from the
+          combination of IPv6 mask and extracted User Identifier and then decide the IPv6
+          destination address of the receiver 4rd CE by adding both given suffix and given
+          Interface ID on this IPv6 delegated prefix.</t>
+
+          <t>When receiving IPv4 packets from native IPv4 network, all fragmented packets
+          is assembled in a single packet if needed and then 4rd BR processes the following
+          operation.</t>
+
+          <t>If IPv4 destination address is based on 4rd prefix, 4rd BR generates IPv6
+          destination address by using address mapping rules described in section 4rd
+          Protocol Specification  If IPv4 destination address is not based on 4rd prefix,
+          4rd BR may discard the packets.</t>
+        </section>
+      </section>
+
+      <section anchor="behavior-of-4rd-ce" title="Behavior of 4rd CE">
+        <section anchor="address-mapping-for-ce" title="Address Mapping">
+          <t>4rd CE gets IPv6 mask and its User Identifier from IPv6 delegated prefix
+          and generates 4rd delegated address. Since IPv6 mask length is given, the
+          length of its User Identifier can be calculated by doing the length of IPv6
+          delegated prefix minus the length of IPv6 mask upon delegating IPv6 prefix
+          from the SP's IPv6 network infrastructure.  At the same time, 4rd CE gets
+          IPv6 mask by extracting the first bits of the length specified by IPV6_MASK_LEN
+          and also its User Identifier by extracting the bits following IPv6 mask.</t>
+
+          <t>After that, some of bits from its User Identifier can be embedded in IPv4
+          address after 4rd prefix. If there are still remaining bits of its User Identifier,
+          these bits are embedded as port prefix described in <xref target="4rd-protocol-specification"></xref>.
+          Finally, 4rd CE can generate 4rd delegated address. In addition, 4rd CE may
+          provide this 4rd delegated address to NAPT in order to provide IPv4 connectivity
+          to all clients on CE LAN side.</t>
+        </section>
+
+        <section anchor="packet-forwarding-for-ce" title="Packet Forwarding">
+          <t>When receiving IPv4 packets from the clients on CE LAN side, the following
+          operation must be done.</t>
+
+          <t>If IPv4 packet is fragmented, IPv4 packet is reassembled before processing.</t>
+
+          <t>If NAT is used, the source address and the source port can be changed by
+          using 4rd delegated address.</t>
+
+          <t>If IPv4 destination is based on 4rd prefix, 4rd CE generates IPv6 destination
+          address from IPv4 destination address and destination port similar to 4rd BR.
+          If IPv4 destination address is not based on 4rd prefix, 4rd CE uses 4RD_BR_ADDRESS
+          as IPv6 destination.</t>
+
+          <t>After deciding the IPv6 destination, 4rd CE checks PMTU in SP's IPv6 network
+          infrastructure. The IPv4 packet can be fragmented if needed before encapsulating
+          in IPv6. And 4rd CE encapsulates IPv4 packet in IPv6 and then forwards it to SP's
+          IPv6 network infrastructure.</t>
+
+          <t>When receiving IPv6 packet from SP's IPv6 network infrastructure, 4rd CE
+          removes IPv6 header and then decapsulates IPv4 packet after checking the source
+          and destination address in both encapsulating and encapsulated packets. After that,
+          the decapsulated IPv4 packet is forwarded to the client on CE LAN side after
+          processing NAT if needed.</t>
+        </section>
+      </section>
+    </section>
+
+    <section anchor="optional-behavior" title="Optional Behavior">
+      <section anchor="multiple-4rd-prefix-support" title="Multiple 4rd prefix support">
+        <t>Multiple 4rd prefix should be used for both 4rd CE and 4rd BR when residual
+        IPv4 prefix size is not enough to provide all 4rd domain. 4rd CE must figure
+        out the appropriate 4rd prefix upon generating 4rd delegated address. Also,
+        4rd BR must figure out the appropriate 4rd prefix upon generating IPv6
+        destination address. For this, 4rd prefix database can be implemented on both
+        4rd CE and 4rd BR. The entry in 4rd prefix database stores the following
+        information.</t>
+
+        <figure align="center" anchor="4rd-prefix-db-fig"
+          title="4rd prefix database">
+          <preamble></preamble>
+
+          <artwork align="center"><![CDATA[
+{4rd prefix} 
+         <--> {4rd prefix identifier, IPv6 mask, 
+               length of user identifier }
+          ]]></artwork>
+        </figure>
+
+        <t><list hangIndent="22" style="hanging">
+          <t hangText="4rd prefix:">IPv4 prefix for specified 4rd domain.</t>
+
+          <t hangText="4rd prefix identifier:">the key for a specific 4rd domain.
+          This is a bit pattern with its length.</t>
+
+          <t hangText="IPv6 mask:">IPv6 mask for a specific 4rd domain.</t>
+
+          <t hangText="Length of User Identifier">Length of User Identifier
+          for a specific 4rd domain.</t>
+        </list></t>
+
+        <t>When delegating IPv6 prefix to 4rd CE, 4rd CE extracts 4rd prefix identifier
+        following IPv6 mask (see 4rd Address Mapping).  4rd CE looks up the entry
+        matched to 4rd prefix identifier by using longest match manner.  If the entry
+        is found, 4rd CE can use 4rd prefix stored in this entry, extract its User
+        Identifier following 4rd prefix identifier in IPv6 delegated prefix and then
+        generate 4rd delegated address.</t>
+
+        <t>When generating IPv6 destination address from IPv4 destination address
+        and destination port on 4rd BR, 4rd BR looks up the entry matched to 4rd
+        prefix by using longest match manner. If the entry is found, 4rd BR can
+        extract its User Identifier from IPv4 destination address and destination
+        port based on the length of User Identifier stored in the entry and then
+        generates IPv6 destination from the combination of IPv6 mask stored in the
+        entry and extracted User Identifier.</t>
+      </section>
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t>In order to prevent from spoofing attack, the address-consistency of
+      the source address of the encapsulating and encapsulated packets must be
+      checked upon receiving the packets from a 4rd domain. If the IPv4 source
+      address in encapsulated IPv4 packet is based on 4rd prefix, IPv4 source
+      address in encapsulated IPv4 packet must be able to be generated from IPv6
+      source address in encapsulating IPv6 packet.  If the IPv4 source address
+      is not based on 4rd prefix, the destination address of the reverse path
+      toward the IPv4 source address in encapsulated IPv4 packet must be same
+      as IPv6 source address in encapsulating IPv6 packet.</t>
+
+      <t>In order to avoid forwarding loop, both 4rd BR and 4rd CE must not
+      forward the packets received from a specified 4rd domain to the same
+      4rd domain.</t>
+    </section>
+
+    <section anchor="iana" title="IANA Consideration">
+      <t>This document has no IANA actions.</t>
+    </section>
+
+    <section anchor="acknowledgements" title="Acknowledgements">
+    </section>
+
+  </middle>
+
+  <!--  *****BACK MATTER ***** -->
+
+  <back>
+    <references title="Normative References">
+      &RFC2119;
+      &RFC2460;
+      &RFC4291;
+    </references>
+
+    <references title="Informative References">
+      &I-D.despres-softwire-sam;
+      &I-D.vautrin-softwire-4rd;
+      &I-D.ietf-v6ops-tunnel-loops;
+      &I-D.ietf-behave-dns64;
+      &I-D.ietf-softwire-dual-stack-lite;
+      &I-D.ietf-behave-v6v4-xlate-stateful;
+      &RFC1918;
+      &RFC3513;
+    </references>
+
+    <!-- Change Log
+
+v00 2011-02-10  TM	Initial version
+
+-->
+  </back>
+</rfc>
