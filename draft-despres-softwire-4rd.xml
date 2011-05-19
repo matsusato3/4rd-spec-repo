@@ -28,12 +28,13 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="std" docName="draft-despres-softwire-4rd-01"
+<rfc category="std" docName="draft-despres-softwire-4rd-02"
      ipr="trust200902">
   <!-- ***** FRONT MATTER ***** -->
 
   <front>
-    <title abbrev="IPv4 Residual Deployment">IPv4 Residual Deployment on IPv6 infrastructure</title>
+    <title abbrev="IPv4 Residual Deployment">IPv4 Residual Deployment
+    on IPv6 infrastructure - protocol specification</title>
 
     <author fullname="Remi Despres" initials="R." role="editor" surname="Despres">
       <organization>RD-IPtech</organization>
@@ -84,7 +85,7 @@
     </author>
 
     <!--  -->
-    <date month="April" year="2011" />
+    <date month="May" year="2011" />
 
     <area>Internet</area>
     <workgroup>Internet Engineering Task Force</workgroup>
@@ -93,22 +94,43 @@
     <abstract>
       <t>This document specifies an automatic tunneling mechanism for
       providing IPv4 connectivity service to end users over a service
-      provider's IPv6 network.  During the long transition period from IPv4
-      to IPv6-only, a service provider's network will have to support IPv6,
-      but will also have to maintain some IPv4 connectivity for a number of
-      customers, for both outgoing and incoming connections, and for both
-      exclusive and shared IPv4 addresses. The 4rd solution (IPv4 Residual
-      Deployment) is designed as a lightweight solution for this.</t>
-
-      <t>In some scenarios, 4rd can dispense ISPs from supporting any NAT in
-      their networks. In some others it can be used in parallel with NAT-
-      based solutions such as DS-lite and/or NAT64/DNS4.</t>
+      provider's IPv6 network. Key aspects include stateless
+      operation, sharing of IPv4 addresses, and an algorithmic mapping
+      between IPv4 addresses and IPv6 tunnel endpoints.</t>
     </abstract>
   </front>
 
   <middle>
     <section title="Introduction">
-      <t>During the transition period from IPv4 to IPv6 Internet Service
+      *** Take the 6rd text as template
+
+      - Applicable for IPv6 only networks
+      - Address sharing (IPv4 prefix, IPv4 address, or part of IPv4
+        address)
+      - Stateless operation. RFC1958 reference.
+      - Scales like 6rd by traffic not by the number of subscribers /
+      sites
+
+      - Stateful NAT remains where it is today on the CE router
+      - Redundancy with anycast, as there is no stateful devices
+      - Allows direct CE to CE communication, following IPv6 routing
+      paths
+
+      - Tunnelling
+      - Algorithmic mapping
+ 
+      - Elevator pitch:
+         - What is 4rd?
+         - Aspects. How 4rd work?
+         - What benefits do 4rd have?
+
+       - Scope of document
+       - Reference DS-lite / stateless alternative for the same
+       problem space (info)
+       - Reference to the solutions motivation document (info)
+
+
+      <t>During the transition period from IPv4 to IPv6, Internet Service
       Providers (ISP's), will deploy networks that are IPv6 only. Some of
       them will do so while they still have to offer IPv4 connectivity.
       The IPv4 service can be one or multiple IPv4 addresses per end-user,
@@ -198,26 +220,38 @@
 
         <t hangText="CE index:">For a CE, the field that is common to its CE
         IPv6 prefix and its CE 4rd prefix. In the former, it follows the Domain
-	IPv6 prefix. In the latter, it follows the Domain 4rd prefix.</t>
+	IPv6 prefix. In the latter, it follows the Domain 4rd
+	prefix.</t>
+
+	*** Change to IPv4 Embedded Address bits (EA-bits).
       </list></t>
     </section>
 
     <section title="Protocol Specification" anchor="protocol-spec">
       <section anchor="general-principles" title="General Princples">
+	*** Remove section.
 	<t>The principle of the 4rd protocol is that IPv4 packets, or in case of
    	shared IPv4 addresses IPv4 datagrams, traverse a 4rd domain by means
-   	of automatic IPv4 in IPv6 tunnels.  IPv6 addresses of destination
+   	of automatic IPv4 in IPv6 tunnels. IPv6 addresses of destination
    	tunnel endpoints are statelessly derived from IPv4 destinations,
    	based on some mapping rule parameters, in such a way that tunnels
    	between CE's follow direct IPv6 paths (i.e. without having to go via
    	BR's).  IPv4 destinations used for these mappings are either IPv4
    	addresses alone or IPv4 addresses + ports depending on whether global
    	addresses assigned to CE's are exclusive or shared.</t>
-
-   	<t>BR's and CE's MAY have the detailed behaviors specified in the
-   	following sections.  Different behaviors are however permitted, but
-	they MUST be equivalent as far as exchanged packets are concerned.</t>
       </section>
+
+      - Add introduction to the protocol
+        Parts: Algorithm, Mapping rules, Configuration parameters, encapsulation
+
+        IPv6 address
+           EA + configured parameters
+           |
+           v
+          f(x) == IPv4 address / IPv4 address + port range
+
+	  *** Use the 5969 as template
+
 
       <section anchor="mapping-rule-parameters" title="Mapping-Rule Parameters">
 	<t>Both CE's and BR's have to know the BR IPv6 address of their domain
@@ -240,7 +274,7 @@
             <preamble></preamble>
 
             <artwork align="center"><![CDATA[
-<---------------- CE IPv6 prefix (max 64) -------------->
+<---------------- CE IPv6 prefix (max 128) -------------->
 +-------------------------------+------------------------+
 |      Domain IPv6 prefix       |        CE index        |
 +-------------------------------+------------------------+
@@ -306,13 +340,22 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	</section>
 
 	<section anchor="port-set" title="From a Port-Set ID to a Port Set">
+	  *** The naive encoding would be to use the port part of the
+	  EA-bits to directly identify port ranges. But that would
+	  require IPv6 provisioning specifically to avoid the 0-4096
+	  port range. The following algorithm allows for a equal
+	  distribution of ports avoiding the lower port range while
+	  having no dependency of IPV6 provisioning.
+	  ***
+
+
 	  <t>Each value of a Port-set ID specifies which ports can be used by any
           protocol whose header format starts with source and destination ports
           (UDP, TCP, SCTP, etc.). Design constraint of the algorithm are the
           following:</t>
 
           <t><list hangIndent="22" style="hanging">
-	    <t hangText="Fairness with respoct to special-value ports:">
+	    <t hangText="Fairness with respect to special-value ports:">
 	    No port-set must contain any port from 0 to 4095. (These ports,
             which have more value than others in OS's, are normally not used
             in dynamic port assignments to applications).</t>
@@ -322,9 +365,10 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
             the same number of ports.</t>
 
 	    <t hangText="Exhaustiveness">
-	    For a any Port-set-ID length, the aggregate of port sets
+	    For any Port-set-ID length, the aggregate of port sets
             assigned for all values must include all ordinary-value ports
             (from 4,096 to 16,384).</t>
+	    *** Should be 65535?
 	  </list></t>
 
 	  <t>If the Port-set ID has 1 to 12 bits, the set comprises 4 port ranges.
@@ -493,6 +537,10 @@ fragmentation extension :           :           :      :      :
           that all pieces of all received IPv4 datagrams go to the right IPv6
           destinations.</t>
 
+
+	  *** A sender must rewrite it's identifier field to match
+	  part of its own port range. Replace below. 
+
 	  <t>Another peculiarity of shared IPv4 addresses is that, without
           precaution, a destination could simultaneously receive from different
           sources fragmented datagrams that have the same Datagram ID (the
@@ -508,6 +556,10 @@ fragmentation extension :           :           :      :      :
       </section>
 
       <section anchor="behavior" title="BR and CE behaviors">
+	*** merge single and multiple mapping rules
+	*** how many mapping entries do you need?
+	*** add text for doing longest match.
+
         <section anchor="one-mapping-rule-behavior" title="Domains having only One Mapping rule">
 	  <t>(a) BR reception of an IPv4 packet</t>
 	  <t><list hangIndent="22" style="hanging">
@@ -575,6 +627,9 @@ fragmentation extension :           :           :      :      :
     	  this section.  At time of writing, whether this will be in the 4rd
     	  specification a MAY, a SHOULD, or a MUST, remains an open question.</t>
 
+*** it MUST be a MUST
+
+
 	  <t>(a) BR reception of an IPv4 packet</t>
 	  <t><list hangIndent="22" style="hanging">
 	    <t hangText="Step 1">If a mapping rule whose length of CE 4rd prefixes does not
@@ -636,10 +691,21 @@ fragmentation extension :           :           :      :      :
    	  At time of writing, whether this test can remain a MAY, or might
    	  require a SHOULD or a MUST remains an open question.</t>
 	</section>
+	<section title="ICMP">
+	  *** NEW
+	  CE on sending will have to set ICMP identifier field on
+	  outgoing.
+	  Section 8 of 2473 for incoming ICMP errors on BR.
+	  Reference RFC5508???
+
+	</section>
+
+
       </section>
     </section>
 
     <section anchor="configuration" title="4rd Configuration">
+
       <t>A CE can acquire 4rd parameters of its 4rd domain in various ways:
       manual configuration by an administrator, software download by the
       ISP, a new DHCPv6 option, etc.  This document describes how to
@@ -648,6 +714,8 @@ fragmentation extension :           :           :      :      :
       option. Other configuration and management methods, MAY use the
       format described by this option for consistency and convenience of
       implementation on CEs that support multiple configuration methods.</t>
+
+*** Remove this section:
 
       <t>The format of Figure 6 is proposed for the DCHPv6 option.  It is
       chosen to permit multiple mapping rules:</t>
@@ -722,22 +790,26 @@ option code                /                          \
     </section>
 
     <section anchor="iana" title="IANA Consideration">
+      *** Remove:
       <t>IANA is requested to assign a DHCPv6 option number for 4rd
       (<xref target="configuration"></xref>).</t>
     </section>
 
     <section anchor="acknowledgements" title="Acknowledgements">
-      <t>The authors wish to thank Mark Townsley for his active encouragements
+      <t>The authors wish to thank Mark Townsley (go Mark!!!) for his active encouragements
       to pursue the 4rd approach since it was first introduced in
       <xref target="I-D.despres-softwire-sam"></xref>. Questions raised by Wojciech
       Dec have been useful to clarify explanations. Olivier Vautrin, who
       independently proposed a similar approach with the same acronym
-      deserves special recognition. Particular gratitude is due to
-      decision makers of the Japan ISP's that have announced actual 4rd
-      deployment projects (www.ietf.org/mail-archive/web/v6ops/current/
-      msg05247).</t>
+      deserves special recognition.</t>
     </section>
 
+
+    <section title="TODO">
+      <t>CE NATs</t>
+      * the CE NAT must use port ranges assigned
+      * note stating that the CE NAT must reuse the port range per destination
+    </section>
   </middle>
 
   <!--  *****BACK MATTER ***** -->
