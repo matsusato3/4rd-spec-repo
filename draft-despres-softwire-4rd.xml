@@ -12,12 +12,12 @@
 <!ENTITY RFC5969 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5969.xml">
 <!ENTITY RFC6056 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6056.xml">
 <!ENTITY RFC5508 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5508.xml">
+<!ENTITY RFC3022 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3022.xml">
 <!ENTITY I-D.despres-softwire-sam SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-despres-softwire-sam-01.xml'>
-<!ENTITY I-D.ietf-behave-dns64 SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-behave-dns64-11.xml'>
-<!ENTITY I-D.ietf-behave-v6v4-xlate-stateful SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-behave-v6v4-xlate-stateful-12.xml'>
-<!ENTITY I-D.ietf-softwire-dual-stack-lite SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-softwire-dual-stack-lite-06.xml'>
-<!ENTITY I-D.ietf-v6ops-tunnel-loops SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ietf-v6ops-tunnel-loops-00.xml'>
-<!ENTITY I-D.draft-ymbk-aplusp SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-ymbk-aplusp-09.xml'>
+<!ENTITY I-D.ietf-softwire-dual-stack-lite SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-softwire-dual-stack-lite.xml'>
+<!ENTITY I-D.ietf-v6ops-tunnel-loops SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-v6ops-tunnel-loops.xml'>
+<!ENTITY I-D.ymbk-aplusp SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ymbk-aplusp'>
+<!ENTITY I-D.operators-softwire-stateless-4v6-motivation SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.operators-softwire-stateless-4v6-motivation'>
 
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -36,7 +36,7 @@
     <title abbrev="IPv4 Residual Deployment">IPv4 Residual Deployment
     on IPv6 infrastructure - protocol specification</title>
 
-    <author fullname="Remi Despres" initials="R." role="editor" surname="Despres">
+    <author fullname="Remi Despres" initials="R." surname="Despres">
       <organization>RD-IPtech</organization>
       <address>
         <postal>
@@ -73,11 +73,11 @@
     </author>
 
     <author fullname="Ole Troan" initials="O." surname="Troan">
-      <organization>Cisco</organization>
+      <organization>cisco</organization>
       <address>
         <postal>
           <street></street>
-          <city>Bergen</city>
+          <city>Oslo</city>
           <country>Norway</country>
         </postal>
         <email>ot@cisco.com</email>
@@ -85,7 +85,7 @@
     </author>
 
     <!--  -->
-    <date month="May" year="2011" />
+    <date month="June" year="2011" />
 
     <area>Internet</area>
     <workgroup>Internet Engineering Task Force</workgroup>
@@ -102,63 +102,80 @@
 
   <middle>
     <section title="Introduction">
-      *** Take the 6rd text as template
+      <t>4rd is a protocol mechanism to deploy IPv4 to sites via a
+      service provider's (SP's) IPv6 network.  Similar to Dual-Stack
+      Lite <xref target="I-D.ietf-softwire-dual-stack-lite"></xref>,
+      4rd is designed to allow IPv4 traffic to be delivered over an
+      IPv6 network without the direct provisioning of IPv4
+      addresses. 4rd can provide an IPv4 prefix, an IPv4 address or a
+      shared IPv4 address to end users. Like 6rd <xref
+      target="RFC5969"></xref>, 4rd is operated in a fully stateless
+      manner within the SP network. The motivation for a stateless
+      alternative to Dual-Stack Lite is described in "Motivations for
+      Stateless IPv4 over IPv6 Migration Solutions" <xref
+      target="I-D.operators-softwire-stateless-4v6-motivation"></xref>.
+      4rd relies on IPv6 and is designed to deliver production-quality
+      dual-stack service while allowing IPv4 to be phased out within
+      the SP network. The phasing out of IPv4 within the SP network is
+      independent of whether the end user disables IPv4 service or
+      not. Further, "Greenfield" IPv6-only networks may use 4rd in
+      order to deliver IPv4 to sites via the IPv6 network in a way
+      that does not require protocol translation between IPv4 and
+      IPv6.</t>
 
-      - Applicable for IPv6 only networks
-      - Address sharing (IPv4 prefix, IPv4 address, or part of IPv4
-        address)
+      <t>4rd utilizes an algorithmic mapping between the IPv6 and IPv4
+      addresses that are assigned for use within the SP network. This
+      mapping provides automatic determination of IPv6 tunnel
+      endpoints from IPv4 destination addresses, allowing the
+      stateless operation of 4rd. 4rd views the IPv6 network as a link
+      layer for IPv4 and supports an automatic tunneling abstraction
+      similar to the Non-Broadcast Multiple Access (NBMA) [RFC2491]
+      model.</t>
+
+      <t>A 4rd domain consists of 4rd Customer Edge (CE) routers and
+      one or more 4rd Border Relays (BRs).  IPv4 packets encapsulated
+      by 4rd follow the IPv6 routing topology within the SP network
+      between CEs and among CEs and BRs. CE to CE traffic is direct,
+      while BRs are traversed only for IPv4 packets that are destined
+      to or are arriving from outside a given 4rd domain.  As 4rd is
+      stateless, BRs may be reached using anycast for failover and
+      resiliency.
+
+      <!--
+      Multiple mapping rule instances may exist within a 
+      single domain in order to support SPs with multiple IPv4 address
+      blocks of various sizes, while retaining the ability to send
+      IPv4 traffic directly between CEs along the IPv6 routing
+      topology.
+      -->
+      </t>
+
+      <t>On the "end-user-facing" (i.e., "LAN") side of a CE, IPv6 and
+      IPv4 are implemented as for any native dual-stack service
+      delivered by the SP. On the "SP-facing" (i.e., "WAN") side of
+      the 4rd CE, provisioning of the interface itself, IPv6 and
+      datalink encapsulation, as well as control protocols such as
+      IPv6 Neighbor Discovery, DHCPv6, etc. all operate as native IPv6
+      with no need for IPv4 operation or support.</t>
+
+      <t>4rd does not require any stateful NAPT <xref
+      target="RFC3022"></xref> functions at the BRs or elsewhere
+      within the SP network. Instead, 4rd allows for sharing of IPv4
+      addresses among multiple sites by automatically allocating a set
+      of non-overlapping ports for each CE as part of the stateless
+      mapping function. It is expected that the CE will, in turn,
+      perform local IPv4 Network Address and Port Translation (NAPT)
+      <xref target="RFC3022"></xref> functions for the site as is
+      commonly performed today, except avoiding ports outside of the
+      allocated port set. Although 4rd is designed primarily to
+      support IPv4 deployment to a customer site (such as a
+      residential home network) by an SP, it can equally be applied to
+      an individual host acting as a CE router.</t>
+
+      <!-- 
+      - Scope of document
       - Stateless operation. RFC1958 reference.
-      - Scales like 6rd by traffic not by the number of subscribers /
-      sites
-
-      - Stateful NAT remains where it is today on the CE router
-      - Redundancy with anycast, as there is no stateful devices
-      - Allows direct CE to CE communication, following IPv6 routing
-      paths
-
-      - Tunnelling
-      - Algorithmic mapping
- 
-      - Elevator pitch:
-         - What is 4rd?
-         - Aspects. How 4rd work?
-         - What benefits do 4rd have?
-
-       - Scope of document
-       - Reference DS-lite / stateless alternative for the same
-       problem space (info)
-       - Reference to the solutions motivation document (info)
-
-
-      <t>During the transition period from IPv4 to IPv6, Internet Service
-      Providers (ISP's), will deploy networks that are IPv6 only. Some of
-      them will do so while they still have to offer IPv4 connectivity.
-      The IPv4 service can be one or multiple IPv4 addresses per end-user,
-      or it can be an IPv4 address shared among multiple end-users.</t>
-
-      <t>In this document, Internet Service Provider is used as a generic
-      term. It includes DSL or Broadband service providers, mobile
-      operators, and private operators of networks of any sizes.</t>
-
-      <t>4rd (IPv4 Residual Deployment) is a generic lightweight solution for
-      providing IPv4 connectivity across an IPv6 only infrastructure. As
-      such, it is the reverse of 6rd (IPv6 Rapid Deployment) whose purpose
-      is to rapidly introduce native IPv6 connectivity across an IPv4
-      network. It applies the same principles of automatic tunneling, an
-      stateless address mappings between IPv4 and IPv6.</t>
-
-      <t>On the tradeoff scale between efficiency of address sharing ratios
-      and simplicity, 4rd is on the side of design and operational
-      simplicity.</t>
-
-      <t>The 4rd mechanism tunnels IPv4 over IPv6 using an algorithmic mapping
-      from IPv4 addresses or IPv4 addresses and ports to the IPv6 addresses
-      used as tunnel endpoints. Depending on ISP constraints and policies,
-      4rd can be used either standalone, with NAT44's in CE's but no NAT in
-      ISP networks, or can co-exist with other mechanisms in the network on
-      NAT's like <xref target="I-D.ietf-softwire-dual-stack-lite">DS-lite</xref>
-      or <xref target="I-D.ietf-behave-v6v4-xlate-stateful">NAT64</xref>/
-      <xref target="I-D.ietf-behave-dns64">DNS64</xref>.</t>
+      -->
     </section>
 
     <section title="Requirements Language">
@@ -218,17 +235,15 @@
 	a residential site in which an already shared IPv4 address has to be
         shared even more among several hosts, it may have more than 32 bits.</t>
 
-        <t hangText="CE index:">For a CE, the field that is common to its CE
-        IPv6 prefix and its CE 4rd prefix. In the former, it follows the Domain
-	IPv6 prefix. In the latter, it follows the Domain 4rd
-	prefix.</t>
-
-	*** Change to IPv4 Embedded Address bits (EA-bits).
+        <t hangText="IPv4 Embedded Address bits (EA-bits)">Bits
+        embedded in the IPv6 address identifying an IPv4 prefix, IPv4
+        address or part of IPv4 address and port set.</t>
       </list></t>
     </section>
 
     <section title="Protocol Specification" anchor="protocol-spec">
-      <section anchor="general-principles" title="General Princples">
+      <!-- 
+      <section anchor="general-principles" title="General Principles">
 	*** Remove section.
 	<t>The principle of the 4rd protocol is that IPv4 packets, or in case of
    	shared IPv4 addresses IPv4 datagrams, traverse a 4rd domain by means
@@ -240,7 +255,9 @@
    	addresses alone or IPv4 addresses + ports depending on whether global
    	addresses assigned to CE's are exclusive or shared.</t>
       </section>
+      -->
 
+      <!-- 
       - Add introduction to the protocol
         Parts: Algorithm, Mapping rules, Configuration parameters, encapsulation
 
@@ -252,6 +269,7 @@
 
 	  *** Use the 5969 as template
 
+      -->
 
       <section anchor="mapping-rule-parameters" title="Mapping-Rule Parameters">
 	<t>Both CE's and BR's have to know the BR IPv6 address of their domain
@@ -276,16 +294,16 @@
             <artwork align="center"><![CDATA[
 <---------------- CE IPv6 prefix (max 128) -------------->
 +-------------------------------+------------------------+
-|      Domain IPv6 prefix       |        CE index        |
+|      Domain IPv6 prefix       |        EA bits         |
 +-------------------------------+------------------------+
-<-- Domain IPv6 Prefix length ->:<-- CE index length --->:
+<-- Domain IPv6 Prefix length ->:<--  EA bit length  --->:
                                 :                        :
                                 :         ||             :
                                 :         \/             :
                                 :                        :
-                                :<-- CE index length --->:
+                                :<--  EA bit length  --->:
             +-------------------+------------------------+
-            | Domain 4rd prefix |        CE index        |
+            | Domain 4rd prefix |        EA bits         |
             +-------------------+------------------------+
             <----------- CE 4rd prefix (max 47) --------->
             ]]></artwork>
@@ -297,8 +315,8 @@
           applicable mapping rule. If the domain has several mapping rules,
           that which applies is that whose Domain IPv6 prefix is at the
           beginning of the CE IPv6 prefix. As shown in Figure 1, the CE 4rd
-          prefix is made of the Domain 4rd prefix followed by the CE index,
-          where the CE index is the remainder of the CE IPv6 prefix after the
+          prefix is made of the Domain 4rd prefix followed by the IPv4 EA bits,
+          where the IPv4 EA bits is the remainder of the CE IPv6 prefix after the
           Domain IPv6 prefix (the length of the Domain IPv6 prefix is defined
           by the mapping rule).</t>
 
@@ -340,6 +358,7 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	</section>
 
 	<section anchor="port-set" title="From a Port-Set ID to a Port Set">
+	  <!-- 
 	  *** The naive encoding would be to use the port part of the
 	  EA-bits to directly identify port ranges. But that would
 	  require IPv6 provisioning specifically to avoid the 0-4096
@@ -347,7 +366,7 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	  distribution of ports avoiding the lower port range while
 	  having no dependency of IPV6 provisioning.
 	  ***
-
+	  -->
 
 	  <t>Each value of a Port-set ID specifies which ports can be used by any
           protocol whose header format starts with source and destination ports
@@ -367,8 +386,7 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	    <t hangText="Exhaustiveness">
 	    For any Port-set-ID length, the aggregate of port sets
             assigned for all values must include all ordinary-value ports
-            (from 4,096 to 16,384).</t>
-	    *** Should be 65535?
+            (from 4,096 to 65,535).</t>
 	  </list></t>
 
 	  <t>If the Port-set ID has 1 to 12 bits, the set comprises 4 port ranges.
@@ -442,7 +460,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
                    :   \/   : Domain IPv6 suffix
                    :        :  |
 +------------------+--------+--|-+----------------------------------+
-|Domain IPv6 prefix|CE index|  ' |                  0               |
+|Domain IPv6 prefix| EA bits|  ' |                  0               |
 +------------------+--------+----+----------------------------------+
 <------------ max 64 ------------>
 <---------------------- CE IPv6 address (128) --------------------->
@@ -538,8 +556,8 @@ fragmentation extension :           :           :      :      :
           destinations.</t>
 
 
-	  *** A sender must rewrite it's identifier field to match
-	  part of its own port range. Replace below. 
+	  <!-- *** A sender must rewrite it's identifier field to match -->
+	  <!-- part of its own port range. Replace below.  -->
 
 	  <t>Another peculiarity of shared IPv4 addresses is that, without
           precaution, a destination could simultaneously receive from different
@@ -556,9 +574,9 @@ fragmentation extension :           :           :      :      :
       </section>
 
       <section anchor="behavior" title="BR and CE behaviors">
-	*** merge single and multiple mapping rules
-	*** how many mapping entries do you need?
-	*** add text for doing longest match.
+	<!-- *** merge single and multiple mapping rules -->
+	<!-- *** how many mapping entries do you need? -->
+	<!-- *** add text for doing longest match. -->
 
         <section anchor="one-mapping-rule-behavior" title="Domains having only One Mapping rule">
 	  <t>(a) BR reception of an IPv4 packet</t>
@@ -611,92 +629,94 @@ fragmentation extension :           :           :      :      :
 	  </list></t>
 	</section>
 
-	<section anchor="multiple-mapping-rule-behavior" title="Domains having Multiple Mapping Rules">
-	  <t>Some ISP will want to use 4rd in networks having several Domain 4rd
-          prefixes, an/or several Domain IPv6 prefixes, and/or assigning CE 4rd
-   	  prefixes of different lengths.  For this several mapping rules are
-   	  needed.</t>
+<!-- 	<section anchor="multiple-mapping-rule-behavior" title="Domains having Multiple Mapping Rules"> -->
+<!-- 	  <t>Some ISP will want to use 4rd in networks having several Domain 4rd -->
+<!--           prefixes, an/or several Domain IPv6 prefixes, and/or assigning CE 4rd -->
+<!--    	  prefixes of different lengths.  For this several mapping rules are -->
+<!--    	  needed.</t> -->
 
-	  <t>A first possibility consists in establishing several 4rd domains,
-   	  each on having a single mapping rule. In this case, paths between
-   	  CE's belonging to different 4rd domains go from one domain to the
-   	  other in IPv4, and cross two BR's.</t>
+<!-- 	  <t>A first possibility consists in establishing several 4rd domains, -->
+<!--    	  each on having a single mapping rule. In this case, paths between -->
+<!--    	  CE's belonging to different 4rd domains go from one domain to the -->
+<!--    	  other in IPv4, and cross two BR's.</t> -->
 
-	  <t>A second possibility permits direct IPv6 paths between CE's by
-   	  supporting several mapping rules in a single domain, as described in
-    	  this section.  At time of writing, whether this will be in the 4rd
-    	  specification a MAY, a SHOULD, or a MUST, remains an open question.</t>
+<!-- 	  <t>A second possibility permits direct IPv6 paths between CE's by -->
+<!--    	  supporting several mapping rules in a single domain, as described in -->
+<!--     	  this section.  At time of writing, whether this will be in the 4rd -->
+<!--     	  specification a MAY, a SHOULD, or a MUST, remains an open question.</t> -->
 
-*** it MUST be a MUST
+<!-- *** it MUST be a MUST -->
 
 
-	  <t>(a) BR reception of an IPv4 packet</t>
-	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">If a mapping rule whose length of CE 4rd prefixes does not
-            exceed 32 bits applies to the IPv4 destination, the BR proceeds to step 2. 
-	    Otherwise, and unless the packet contains a complete IPv4 datagram, IPv4 datagram
-            reassembly is performed.  If a complete datagram is available, the BR then proceeds
-	    to step 2 as though the datagram had been received in a single packet.</t>
+<!-- 	  <t>(a) BR reception of an IPv4 packet</t> -->
+<!-- 	  <t><list hangIndent="22" style="hanging"> -->
+<!-- 	    <t hangText="Step 1">If a mapping rule whose length of CE 4rd prefixes does not -->
+<!--             exceed 32 bits applies to the IPv4 destination, the BR proceeds to step 2.  -->
+<!-- 	    Otherwise, and unless the packet contains a complete IPv4 datagram, IPv4 datagram -->
+<!--             reassembly is performed.  If a complete datagram is available, the BR then proceeds -->
+<!-- 	    to step 2 as though the datagram had been received in a single packet.</t> -->
 
-	    <t hangText="Step 2">The BR checks that the IPv4 source doesn't start with the
-            Domain 4rd prefix of any rule.  In case of success, the packet is encapsulated
-	    and forwarded to this CE IPv6 address via the IPv6 interface.</t>
-	  </list></t>
+<!-- 	    <t hangText="Step 2">The BR checks that the IPv4 source doesn't start with the -->
+<!--             Domain 4rd prefix of any rule.  In case of success, the packet is encapsulated -->
+<!-- 	    and forwarded to this CE IPv6 address via the IPv6 interface.</t> -->
+<!-- 	  </list></t> -->
 
-	  <t>(b) BR Reception of an IPv6 packet (reassembled if applicable)</t>
-	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">The BR checks that a CE IPv6 address is successfully
-            derived from the source of the IPv4 encapsulated packet, and that the source
-	    address of the encapsulating packet is equal to it. In case of success, the
-	    BR tries to derive a CE IPv6 address from the destination of the encapsulated
-            packet. In case of success: (1) if the source CE 4rd prefix exceeds 32 bits,
-	    the Datagram ID of the packet is replaced by a locally generated one; (2) the
-	    encapsulating packet is retransmitted via the IPv6 interface with this CE IPv6
-	    address as destination (and the BR IPv6 address as source address); in case of
-	    failure, the IPv4 packet is decapsulated and forwarded via the IPv4 interface.</t>
-	  </list></t>
+<!-- 	  <t>(b) BR Reception of an IPv6 packet (reassembled if applicable)</t> -->
+<!-- 	  <t><list hangIndent="22" style="hanging"> -->
+<!-- 	    <t hangText="Step 1">The BR checks that a CE IPv6 address is successfully -->
+<!--             derived from the source of the IPv4 encapsulated packet, and that the source -->
+<!-- 	    address of the encapsulating packet is equal to it. In case of success, the -->
+<!-- 	    BR tries to derive a CE IPv6 address from the destination of the encapsulated -->
+<!--             packet. In case of success: (1) if the source CE 4rd prefix exceeds 32 bits, -->
+<!-- 	    the Datagram ID of the packet is replaced by a locally generated one; (2) the -->
+<!-- 	    encapsulating packet is retransmitted via the IPv6 interface with this CE IPv6 -->
+<!-- 	    address as destination (and the BR IPv6 address as source address); in case of -->
+<!-- 	    failure, the IPv4 packet is decapsulated and forwarded via the IPv4 interface.</t> -->
+<!-- 	  </list></t> -->
 
-	  <t>(c) CE reception of an IPv4 packet</t>
-	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">If the CE 4rd prefix of the CE does not exceed 32 bits,
-            and a mapping rule whose length of CE 4rd prefixes does not exceed 32 bits
-	    applies to the IPv4 destination, the CE proceeds to step 2. Otherwise, and
-	    unless the packet contains a complete IPv4 datagram, IPv4 datagram reassembly
-	    is performed. If a complete datagram is available, the BR then proceeds to step
-	    2 as though the datagram had been received in a single packet.</t>
+<!-- 	  <t>(c) CE reception of an IPv4 packet</t> -->
+<!-- 	  <t><list hangIndent="22" style="hanging"> -->
+<!-- 	    <t hangText="Step 1">If the CE 4rd prefix of the CE does not exceed 32 bits, -->
+<!--             and a mapping rule whose length of CE 4rd prefixes does not exceed 32 bits -->
+<!-- 	    applies to the IPv4 destination, the CE proceeds to step 2. Otherwise, and -->
+<!-- 	    unless the packet contains a complete IPv4 datagram, IPv4 datagram reassembly -->
+<!-- 	    is performed. If a complete datagram is available, the BR then proceeds to step -->
+<!-- 	    2 as though the datagram had been received in a single packet.</t> -->
 
-	    <t hangText="Step 2">The CE tries to derive a CE IPv6 address from the IPv4
-            destination. It then encapsulates the IPv4 packet into an IPv6 packet whose
-	    destination is this CE IPv6 address, if one is obtained, or the BR IPv6 address
-	    otherwise.</t>
-	  </list></t>
+<!-- 	    <t hangText="Step 2">The CE tries to derive a CE IPv6 address from the IPv4 -->
+<!--             destination. It then encapsulates the IPv4 packet into an IPv6 packet whose -->
+<!-- 	    destination is this CE IPv6 address, if one is obtained, or the BR IPv6 address -->
+<!-- 	    otherwise.</t> -->
+<!-- 	  </list></t> -->
 
-	  <t>(d) CE reception of an IPv6 packet (reassembled if applicable)</t>
-	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">The CE checks that a CE IPv6 address is successfully
-            derived from the source of the IPv4 encapsulated packet, and that it is
-	    equal to the source address of the encapsulating packet. In case of success:
-	    (1) if the source CE 4rd prefix exceeds 32 bits, the Datagram ID of the packet
-	    is replaced by a locally generated one; (2) the IPv4 packet is decapsulated
-	    and forwarded via the IPv4 interface.</t>
- 	  </list></t>
+<!-- 	  <t>(d) CE reception of an IPv6 packet (reassembled if applicable)</t> -->
+<!-- 	  <t><list hangIndent="22" style="hanging"> -->
+<!-- 	    <t hangText="Step 1">The CE checks that a CE IPv6 address is successfully -->
+<!--             derived from the source of the IPv4 encapsulated packet, and that it is -->
+<!-- 	    equal to the source address of the encapsulating packet. In case of success: -->
+<!-- 	    (1) if the source CE 4rd prefix exceeds 32 bits, the Datagram ID of the packet -->
+<!-- 	    is replaced by a locally generated one; (2) the IPv4 packet is decapsulated -->
+<!-- 	    and forwarded via the IPv4 interface.</t> -->
+<!--  	  </list></t> -->
 
-	  <t>NOTE: With consistency check made between encapsulated and
-	  encapsulating sources in BR's and CE's when they received tunneled
-   	  packets, no CE can forward an invalid IPv4 source address, or address
-   	  plus port, and have it forwarded at by the egress BR or CE. Yet, if
-    	  before tunneling a packet, a CE makes an additional check that the
-   	  IPv4 source is consistent with the CE IPv6 address, it can discard
-   	  invalid packets earlier than by leaving it to the egress BR or CE.
-   	  At time of writing, whether this test can remain a MAY, or might
-   	  require a SHOULD or a MUST remains an open question.</t>
-	</section>
+<!-- 	  <t>NOTE: With consistency check made between encapsulated and -->
+<!-- 	  encapsulating sources in BR's and CE's when they received tunneled -->
+<!--    	  packets, no CE can forward an invalid IPv4 source address, or address -->
+<!--    	  plus port, and have it forwarded at by the egress BR or CE. Yet, if -->
+<!--     	  before tunneling a packet, a CE makes an additional check that the -->
+<!--    	  IPv4 source is consistent with the CE IPv6 address, it can discard -->
+<!--    	  invalid packets earlier than by leaving it to the egress BR or CE. -->
+<!--    	  At time of writing, whether this test can remain a MAY, or might -->
+<!--    	  require a SHOULD or a MUST remains an open question.</t> -->
+<!-- 	</section> -->
+
+
 	<section title="ICMP">
-	  *** NEW
-	  CE on sending will have to set ICMP identifier field on
-	  outgoing.
-	  Section 8 of 2473 for incoming ICMP errors on BR.
-	  Reference RFC5508???
+	  <!-- *** NEW -->
+	  <!-- CE on sending will have to set ICMP identifier field on -->
+	  <!-- outgoing. -->
+	  <!-- Section 8 of 2473 for incoming ICMP errors on BR. -->
+	  <!-- Reference RFC5508??? -->
 
 	</section>
 
@@ -706,47 +726,17 @@ fragmentation extension :           :           :      :      :
 
     <section anchor="configuration" title="4rd Configuration">
 
-      <t>A CE can acquire 4rd parameters of its 4rd domain in various ways:
-      manual configuration by an administrator, software download by the
-      ISP, a new DHCPv6 option, etc.  This document describes how to
-      configure the necessary parameters via a single DHCPv6 option.  A CE
-      that allows IPv6 configuration by DHCPv6 SHOULD implement this
+      <t>A CE can acquire 4rd parameters of its 4rd domain in various
+      ways: manual configuration by an administrator, software
+      download by the ISP, a new DHCPv6 option, etc. A companion
+      document [ref] describes how to configure the necessary
+      parameters via DHCPv6 <xref target="RFC3315"></xref>.  A CE that
+      allows IPv6 configuration by DHCPv6 SHOULD implement this
       option. Other configuration and management methods, MAY use the
-      format described by this option for consistency and convenience of
-      implementation on CEs that support multiple configuration methods.</t>
+      format described by this option for consistency and convenience
+      of implementation on CEs that support multiple configuration
+      methods.</t>
 
-*** Remove this section:
-
-      <t>The format of Figure 6 is proposed for the DCHPv6 option.  It is
-      chosen to permit multiple mapping rules:</t>
-
-      <figure align="center" anchor="dhcp-fig" title="4rd DHCPv6 option">
-        <preamble></preamble>
-        <artwork align="center"><![CDATA[
-<-2-><-2-><------------------- n octets ----------------->
-+----+----+-----...-----+-- ... --+-----...-----+-- ... --+
-|  . |  n | parameter 1 |         | Parameter j |         |
-+--|-+----+-----...-----+-- ... --+-----...-----+-- ... --+
-   |                        _____/              \_____
-option code                /                          \
-  (TBD)                    +----+----+----+--...--+----+
-                           |  . | k  | parameter value |
-                           +--|-+----+----+--...--+----+
-                     parameter code  <--- k octets  -->
-
-  PARAMETER-CODES (in Hexadecimal)
-    0x10 :  BR IPv6 address
-    0x11 :  Length of CE-IPv6-prefixes
-    0x2m :  Domain IPv6 prefix, with m useful bits in last octet
-    0x3m :  Domain 4rd prefix, with m useful bits in last octet
-    0x4m :  Domain IPv6 suffix, with m useful bits in last octet
-        ]]></artwork>
-      </figure>
-
-      <t>In the parameter list the BR IPv6 address is first, followed by
-      parameters of each rule.  For each rule, the order is [Domain IPv6
-      prefix, Domain IPv4 prefix, Length of CE IPv6 prefixes, Domain IPv6
-      suffix (optional)].</t>
     </section>
 
     <section anchor="security" title="Security Considerations">
@@ -767,12 +757,13 @@ option code                /                          \
 	where 4rd is supported, it is less and less used.</t>
 
 	<t hangText="Routing-loop attacks">
-	Routing-loop attacks that may exist in some automatic-tunneling
-        scenarios are documented in [I-D.ietf-v6ops-tunnel-loops].  They
-        cannot exist with 4rd because each BRs checks that the IPv6 source
-        address of a received IPv6 packet is a CE address
-	(<xref target="one-mapping-rule-behavior"></xref> (b)
-        and <xref target="multiple-mapping-rule-behavior"></xref> (b)).</t>
+	Routing-loop attacks that may exist in some
+	automatic-tunneling scenarios are documented in <xref
+	target="I-D.ietf-v6ops-tunnel-loops"></xref>.  They cannot
+	exist with 4rd because each BRs checks that the IPv6 source
+	address of a received IPv6 packet is a CE address (<xref
+	target="one-mapping-rule-behavior"></xref> (b) and <!-- <xref -->
+	<!-- target="multiple-mapping-rule-behavior"></xref> --> (b)).</t>
 
 	<t hangText="Attacks facilitated by restricted port sets">
 	From hosts that are not subject to ingress filtering of
@@ -790,13 +781,11 @@ option code                /                          \
     </section>
 
     <section anchor="iana" title="IANA Consideration">
-      *** Remove:
-      <t>IANA is requested to assign a DHCPv6 option number for 4rd
-      (<xref target="configuration"></xref>).</t>
+      <t>This document makes no request of IANA.</t>
     </section>
 
     <section anchor="acknowledgements" title="Acknowledgements">
-      <t>The authors wish to thank Mark Townsley (go Mark!!!) for his active encouragements
+      <t>The authors wish to thank Mark Townsley for his active encouragements
       to pursue the 4rd approach since it was first introduced in
       <xref target="I-D.despres-softwire-sam"></xref>. Questions raised by Wojciech
       Dec have been useful to clarify explanations. Olivier Vautrin, who
@@ -807,8 +796,8 @@ option code                /                          \
 
     <section title="TODO">
       <t>CE NATs</t>
-      * the CE NAT must use port ranges assigned
-      * note stating that the CE NAT must reuse the port range per destination
+      <!-- * the CE NAT must use port ranges assigned -->
+      <!-- * note stating that the CE NAT must reuse the port range per destination -->
     </section>
   </middle>
 
@@ -825,21 +814,21 @@ option code                /                          \
 
     <references title="Informative References">
       &I-D.despres-softwire-sam;
-      &I-D.ietf-behave-dns64; 
-      &I-D.ietf-behave-v6v4-xlate-stateful;
       &I-D.ietf-softwire-dual-stack-lite;
       &I-D.ietf-v6ops-tunnel-loops;
       &RFC2827;
+      &RFC3022;
       &RFC4953;
-      &RFC5569;
       &RFC5961;
       &RFC5969;
       &RFC6056;
+      &I-D.operators-softwire-stateless-4v6-motivation;
     </references>
 
     <!-- Change Log
 
 v00 2011-04-08  TM	Initial version
+v02 2011-06-14  OT	Revised version from Berlin discussion
 
 -->
   </back>
