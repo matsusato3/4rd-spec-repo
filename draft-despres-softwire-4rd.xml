@@ -13,6 +13,7 @@
 <!ENTITY RFC6056 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6056.xml">
 <!ENTITY RFC5508 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5508.xml">
 <!ENTITY RFC3022 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3022.xml">
+<!ENTITY RFC2491 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2491.xml">
 <!ENTITY I-D.despres-softwire-sam SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-despres-softwire-sam-01.xml'>
 <!ENTITY I-D.ietf-softwire-dual-stack-lite SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-softwire-dual-stack-lite.xml'>
 <!ENTITY I-D.ietf-v6ops-tunnel-loops SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-v6ops-tunnel-loops.xml'>
@@ -226,7 +227,7 @@
         <t hangText="Port-set ID:">In a CE 4rd prefix longer than 32
         bits, bits that follow the first 32.  It algorithmically
         identifies a set of ports exclusively assigned to the CE. As
-        specified in Section <xref target="portsetid"></xref>, the set
+        specified in Section <xref target="port-set-id"></xref>, the set
         can comprise up to 4 disjoint port ranges.</t>
 
         <t hangText="Domain IPv6 prefix:">An IPv6 prefix assigned by an ISP to
@@ -810,6 +811,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
       &RFC2460;
       &RFC3315;
       &RFC4291;
+      &RFC2491;
     </references>
 
     <references title="Informative References">
