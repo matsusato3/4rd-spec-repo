@@ -107,21 +107,20 @@
       4rd is designed to allow IPv4 traffic to be delivered over an
       IPv6 network without the direct provisioning of IPv4
       addresses. 4rd can provide an IPv4 prefix, an IPv4 address or a
-      shared IPv4 address to end users. Like 6rd <xref
-      target="RFC5969"></xref>, 4rd is operated in a fully stateless
-      manner within the SP network. The motivation for a stateless
-      alternative to Dual-Stack Lite is described in "Motivations for
-      Stateless IPv4 over IPv6 Migration Solutions" <xref
+      shared IPv4 address. Like 6rd <xref target="RFC5969"></xref>,
+      4rd is operated in a fully stateless manner within the SP
+      network. The motivation for a stateless alternative to
+      Dual-Stack Lite is described in "Motivations for Stateless IPv4
+      over IPv6 Migration Solutions" <xref
       target="I-D.operators-softwire-stateless-4v6-motivation"></xref>.
 
       4rd relies on IPv6 and is designed to deliver production-quality
       dual-stack service while allowing IPv4 to be phased out within
-      the SP network. The phasing out of IPv4 within the SP network is
-      independent of whether the end user disables IPv4 service or
-      not. Further, "Greenfield" IPv6-only networks may use 4rd in
-      order to deliver IPv4 to sites via the IPv6 network in a way
-      that does not require protocol translation between IPv4 and
-      IPv6.</t>
+      the SP network. The phasing out of IPv4 is independent of
+      whether the end user disables IPv4 service or not. Further,
+      "Greenfield" IPv6-only networks may use 4rd in order to deliver
+      IPv4 to sites via the IPv6 network in a way that does not
+      require protocol translation between IPv4 and IPv6.</t>
 
       <t>4rd utilizes an algorithmic mapping between the IPv6 and IPv4
       addresses that are assigned for use within the SP network. This
@@ -129,26 +128,28 @@
       endpoints from IPv4 destination addresses, allowing the
       stateless operation of 4rd. 4rd views the IPv6 network as a link
       layer for IPv4 and supports an automatic tunneling abstraction
-      similar to the Non-Broadcast Multiple Access (NBMA) [RFC2491]
-      model.</t>
+      similar to the Non-Broadcast Multiple Access (NBMA) <xref
+      target="RFC2491"></xref> model.</t>
+
+      <t>The 4rd algorithmic mapping is also used to automatically
+      provision IPv4 addresses and allocating a set of non-overlapping
+      ports for each 4rd CE.  On the "SP-facing" (i.e., "WAN") side of
+      the 4rd CE, provisioning of the interface itself, IPv6 and
+      datalink encapsulation, as well as control protocols such as
+      IPv6 Neighbor Discovery, DHCPv6, etc. all operate as native IPv6
+      with no need for IPv4 operation or support. On the other hand,
+      "customer-facing" (i.e., "LAN") side of a CE, IPv6 and IPv4 are
+      implemented as for any native dual-stack service delivered by
+      the SP.</t>
 
       <t>A 4rd domain consists of 4rd Customer Edge (CE) routers and
-      one or more 4rd Border Relays (BRs).  IPv4 packets encapsulated
+      one or more 4rd Border Relays (BRs). IPv4 packets encapsulated
       by 4rd follow the IPv6 routing topology within the SP network
       between CEs and among CEs and BRs. CE to CE traffic is direct,
       while BRs are traversed only for IPv4 packets that are destined
-      to or are arriving from outside a given 4rd domain.  As 4rd is
+      to or are arriving from outside a given 4rd domain. As 4rd is
       stateless, BRs may be reached using anycast for failover and
-      resiliency.
-
-      <!--
-      Multiple mapping rule instances may exist within a 
-      single domain in order to support SPs with multiple IPv4 address
-      blocks of various sizes, while retaining the ability to send
-      IPv4 traffic directly between CEs along the IPv6 routing
-      topology.
-      -->
-      </t>
+      resiliency.</t>
 
       <t>On the "end-user-facing" (i.e., "LAN") side of a CE, IPv6 and
       IPv4 are implemented as for any native dual-stack service
@@ -171,11 +172,6 @@
       support IPv4 deployment to a customer site (such as a
       residential home network) by an SP, it can equally be applied to
       an individual host acting as a CE router.</t>
-
-      <!-- 
-      - Scope of document
-      - Stateless operation. RFC1958 reference.
-      -->
     </section>
 
     <section title="Requirements Language">
@@ -187,57 +183,62 @@
 
     <section title="Terminology">
       <t><list hangIndent="22" style="hanging">
-	<t hangText="4rd domain (Domain):">an IPv6 routing network operated
-	by an ISP and comprising one or several 4rd BR's having the
-        same set of parameters.  It offers to its 4rd-capable CE's global
-	IPv4 connectivity, both outgoing and incoming, and with exclusive or
-        shared IPv4 addresses.</t>
+	<t hangText="4rd domain (Domain):">A set of 4rd CEs and BRs
+	connected to the same virtual 4rd link. A service provider may
+	deploy 4rd with a single 4rd domain, or may utilize multiple
+	4rd domains. Each domain requires a separate 4rd prefix.</t>
 
-	<t hangText="4rd Border Relay (BR):">A 4rd-capable router managed
-	by the service provider at the edge of a 4rd domain.  A BR has
-        an IPv6-enabled interface connected to the ISP network, and an IPv4
-	virtual interface acting as an endpoint for the automatic 4rd tunnel.
-        This tunnel (IPv4 in IPv6) is between the BR and all CE's of the
-	Domain.</t>
+	<t hangText="4rd Border Relay (BR):">A 4rd-enabled router
+	managed by the service provider at the edge of a 4rd domain.
+	A Border Relay router has at least one of each of the
+	following: an IPv6-enabled interface, a 4rd virtual interface
+	acting as an endpoint for the 4rd IPv4 in IPv6 tunnel, and an
+	IPv4 interface connected to the native IPv4 network. A 4rd BR
+	may also be referred to simply as a "BR" within the context of
+	4rd.</t>
 
-	<t hangText="4rd Customer Edge (CE):">A node at the border between
-	a customer network and the 4rd domain.  This node has an
-        IPv6 interface connected to the ISP network, and a virtual IPv4
-	interface acting as the end- point of the automatic 4rd tunnel. This
-	tunnel (IPv4 in IPv6) is between the CE and all other CE's and all
-	BR's of the Domain.  It may be a host, a router, or both.</t>
+	<t hangText="4rd Customer Edge (CE):">A device functioning as
+	a Customer Edge router in a 4rd deployment. In a residential
+	broadband deployment, this type of device is sometimes
+	referred to as a "Residential Gateway" (RG) or "Customer
+	Premises Equipment" (CPE). A typical 4rd CE serving a
+	residential site has one WAN side interface, one or more LAN
+	side interfaces, and a 4rd virtual interface. A 4rd CE may
+	also be referred to simply as a "CE" within the context of
+	4rd.</t>
 
         <t hangText="CE IPv6 prefix:">The IPv6 prefix assigned to a CE by
 	other means than 4rd itself, and used by 4rd to derive a CE 4rd
 	prefix.</t>
 
-        <t hangText="CE IPv6 address:">In the context of 4rd, the IPv6
-	address used to reach a CE from other CE's and from BR's.  A CE
-        typically has another IPv6 address, assigned to it at its IPv6
-	interface without relationship with 6rd.</t>
+        <t hangText="CE IPv6 address:">The IPv6 address given to the
+        CE as part of normal IPv6 Internet access. This address is
+        used by a 4rd CE to create the 4rd prefix as well as to send
+        and receive IPv6-encapsulated IPv4 packets.</t>
 
-        <t hangText="CE 4rd prefix:">The 4rd prefix of the CE. It is derived
-	from the CE IPv6 prefix by a mapping rule according to
-	<xref target="mapping-rules"></xref>.  Depending on its length, it is
-	an IPv4 prefix, an IPv4 address, or a shared IPv4 address followed by
-	a Port-set ID (<xref target="port-set-id"></xref>).</t>
+        <t hangText="CE 4rd prefix:">The 4rd prefix of the CE. It is
+        derived from the CE IPv6 prefix by a mapping rule according to
+        <xref target="mapping-rules"></xref>. Depending on its length,
+        it is an IPv4 prefix, an IPv4 address, or a shared IPv4
+        address followed by a Port-set ID (<xref
+        target="port-set-id"></xref>).</t>
 
-        <t hangText="Port-set ID:">In a CE 4rd prefix longer than 32 bits, bits
-        that follow the first 32.  It algorithmically identifies a set of ports
-	exclusively assigned to the CE. As specified in Section 4.3.3, the
-        set can comprise up to 4 disjoint port ranges.</t>
+        <t hangText="Port-set ID:">In a CE 4rd prefix longer than 32
+        bits, bits that follow the first 32.  It algorithmically
+        identifies a set of ports exclusively assigned to the CE. As
+        specified in Section <xref target="portsetid"></xref>, the set
+        can comprise up to 4 disjoint port ranges.</t>
 
         <t hangText="Domain IPv6 prefix:">An IPv6 prefix assigned by an ISP to
 	a 4rd domain.</t>
 
-        <t hangText="Domain IPv4 prefix:">A 4rd prefix assigned by an ISP to the
-	4rd domain.  In typical operator applications, it is an IPv4 prefix. In
-	a residential site in which an already shared IPv4 address has to be
-        shared even more among several hosts, it may have more than 32 bits.</t>
+        <t hangText="Domain IPv4 prefix:">A 4rd prefix assigned by an
+        ISP to the 4rd domain.</t>
 
-        <t hangText="IPv4 EA-bits:">IPv4 Embedded Address bits
-        embedded in the IPv6 address identifying an IPv4 prefix, IPv4
-        address or part of IPv4 address and port set.</t>
+        <t hangText="IPv4 Embedded Address (EA) bits:">The IPv4
+        Embedded Address bits embedded in the IPv6 address identify an
+        IPv4 prefix, IPv4 address or part of IPv4 address and port
+        set.</t>
       </list></t>
     </section>
 
