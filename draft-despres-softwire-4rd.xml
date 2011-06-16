@@ -113,15 +113,15 @@
       alternative to Dual-Stack Lite is described in "Motivations for
       Stateless IPv4 over IPv6 Migration Solutions" <xref
       target="I-D.operators-softwire-stateless-4v6-motivation"></xref>.
+      </t>
 
-      4rd relies on IPv6 and is designed to deliver production-quality
-      dual-stack service while allowing IPv4 to be phased out within
-      the SP network. The phasing out of IPv4 within the SP network is
-      independent of whether the end user disables IPv4 service or
-      not. Further, "Greenfield" IPv6-only networks may use 4rd in
-      order to deliver IPv4 to sites via the IPv6 network in a way
-      that does not require protocol translation between IPv4 and
-      IPv6.</t>
+      <t>4rd relies on IPv6 and is designed to deliver production-quality
+      dual-stack service while allowing IPv4 to be phased out within the
+      SP network. The phasing out of IPv4 within the SP network is
+      independent of whether the end user disables IPv4 service or not.
+      Further, "Greenfield" IPv6-only networks may use 4rd in order to
+      deliver IPv4 to sites via the IPv6 network in a way that does not
+      require protocol translation between IPv4 and IPv6.</t>
 
       <t>4rd utilizes an algorithmic mapping between the IPv6 and IPv4
       addresses that are assigned for use within the SP network. This
