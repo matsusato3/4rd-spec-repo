@@ -203,7 +203,7 @@
 	<t hangText="4rd Customer Edge (CE):">A node at the border between
 	a customer network and the 4rd domain.  This node has an
         IPv6 interface connected to the ISP network, and a virtual IPv4
-	interface acting as the end- point of the automatic 4rd tunnel. This
+	interface acting as the endpoint of the automatic 4rd tunnel. This
 	tunnel (IPv4 in IPv6) is between the CE and all other CE's and all
 	BR's of the Domain.  It may be a host, a router, or both.</t>
 
@@ -453,7 +453,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
    |IPv4 shared address| '  |
    +---------------+---+----+
                    <-------->
-                 CE-index length
+                  EA bit length
                    :        :
                    :   ||   :
                    :   ||   :
@@ -468,7 +468,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
           </figure>
 
 	  <t>In order to find whether a CE IPv6 address can be derived from an
-	  IPv4 address, or an IPv6 address + a port, a mapping rule has to be
+	  IPv4 address, or an IPv4 address + a port, a mapping rule has to be
    	  found that matches the IPv4 information:</t>
 
 	  <t><list style="symbols">
@@ -531,13 +531,12 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	<t>For 4rd domain traversal, IPv4 packets are encapsulated in
 	IPv6 packets whose Next header is set to 4 (i.e.  IPv4). If
 	fragmentation of IPv6 packets is needed, it is performed
-	according to <xref target="RFC2460"></xref>, and as
-	illustrated in [deleted]. Absent more specific information,
-	the path MTU of a 4rd Domain has to be set to 1280 <xref
-	target="RFC2460"></xref>.</t>
+	according to <xref target="RFC2460"></xref>. Absent more specific
+	information, the path MTU of a 4rd Domain has to be set to 1280
+	<xref target="RFC2460"></xref>.</t>
 
 	<t>In domains where IPv4 addresses are not shared, IPv6 destinations are
-	derived from IPv4 addresses alone.  Thus, each IPv4 packet can be
+	derived from IPv4 addresses alone. Thus, each IPv4 packet can be
 	encapsulated and decapsulated independently of each other. 4rd
 	processing is completely stateless.</t>
 
@@ -577,56 +576,93 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	<!-- *** how many mapping entries do you need? -->
 	<!-- *** add text for doing longest match. -->
 
+        <!--
         <section anchor="one-mapping-rule-behavior" title="Domains having only One Mapping rule">
+        -->
 	  <t>(a) BR reception of an IPv4 packet</t>
 	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">If the length of CE 4rd prefixes does not exceed 32 bits,
-            the BR proceeds to step 2. Otherwise, and unless the packet contains a complete
-            IPv4 datagram, IPv4 datagram reassembly is performed.  If a complete datagram is
-            available, the BR proceeds to step 2 as though the datagram had been received in
-            a single packet.</t>
+	    <t hangText="Step 1">BR tries to find an appropriate mapping rule 
+            from the IPv4 destination address in the received IPv4 packet.
+	    BR searches the mapping rule which has specific Domain 4rd prefix
+	    matched to the IPv4 destination address by using the longest match
+            manner.  If the mapping rule is not found, BR discards the received
+	    packet. If the length of CE 4rd prefix associated with the mapping
+	    rule does not exceed 32 bits, BR proceeds to step 2. If the length
+	    of CE 4rd prefix exceeds 32 bits, BR checks that the received packet
+	    contains a complete IPv4 datagram. If the packet is fragmented, BR
+	    tries to reassemble the packet. Once BR can obtain the complete IPv4
+	    packet, BR proceeds to step 2 as though the datagram has been received
+	    in a single packet.</t>
 
-	    <t hangText="Step 2">The BR checks that the IPv4 source doesn't start with the
-            Domain 4rd prefix, and that a CE IPv6 address is successfully derived from the
-	    IPv4 destination. In case of success, the packet is encapsulated and forwarded
-	    to this CE IPv6 address via the IPv6 interface.</t>
+	    <t hangText="Step 2">BR generates a CE IPv6 address from the IPv4
+	    destination address or the IPv4 destination address and the destination
+	    port based on the mapping rule found in step 1. If the CE IPv6 address can
+	    be successfully generated, BR encapsulates the complete IPv4 packet
+	    in IPv6 and forwards the IPv6 packet via the IPv6 interface. If the
+	    length of the IPv6 encapsulated packet exceeds the MTU of the IPv6
+	    interface, the fragmentation should be done in IPv6.</t>
 	  </list></t>
 
 	  <t>(b) BR reception of an IPv6 packet</t>
 	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">The BR checks that a CE IPv6 address is successfully
-            derived from the source of the IPv4 encapsulated packet, and that the source
-	    address of the encapsulating packet is equal to it. In case of success: (1) if
-	    the length of CE 4rd prefixes exceeds 32 bits, the Datagram ID of the packet
-	    is replaced by a locally generated one; (2) the IPv4 packet is forwarded via
-	    the IPv4 interface.</t>
+	    <t hangText="Step 1">If the received IPv6 packet is fragmented, the reassembly
+            should be done in IPv6 at first. Once BR obtains a complete IPv6 packet, BR
+	    checks the IPv4 source address in the encapsulated IPv4 packet. If the mapping
+	    rule is found from the IPv4 source address, BR tries to derive a CE IPv6 address
+	    from the IPv4 source address or the IPv4 source address and the source port in
+	    the IPv4 encapsulated packet and that the IPv6 source address of the encapsulating
+	    IPv6 packet is equal to it. In case of success, BR decapsulates the IPv4 packet
+	    and forward it via the IPv4 interface. If the mapping rule is not found, BR
+	    discards the received packet.</t>
 	  </list></t>
 
 	  <t>(c) CE reception of an IPv4 packet</t>
 	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">If the CE 4rd prefix of the CE does not exceed 32 bits and
-            the IPv4 destination address starts with the Domain 4rd prefix, the CE proceeds
-	    to step 2. Otherwise, and unless the packet contains a complete IPv4 datagram,
-	    IPv4 datagram reassembly is performed. If a complete datagram is available,
-	    the BR proceeds to step 2 as though the datagram had been received in a single
-	    packet.</t>
+	    <t hangText="Step 1">CE tries to find an appropriate mapping rule from
+	    the IPv4 destination address in the received IPv4 packet. CE searches
+	    the mapping rule which has specific Domain 4rd prefix matched to the
+	    IPv4 destination address by using the longest match manner. If the
+	    mapping rule is found, CE checks the length of CE 4rd prefix. If the
+	    length does not exceed 32 bits, CE proceeds to step 2. It the legnth
+            exceeds 32 bits, CE checks that the received IPv4 packet contains a
+            complete IPv4 datagram. If the packet is fragmented, CE tries to reassemble
+	    the packet. Once CE can get the complete IPv4 packet, CE proceeds to step 2
+	    as tought the datagram has been received in a single packet. If the
+	    mapping rule is not found, CE proceeds to step 2.</t>
 
-	    <t hangText="Step 2">The CE tries tries to derive a CE IPv6 address from the
-            IPv4 destination. It then encapsulates the IPv4 packet into an IPv6 packet whose
-	    destination is this CE IPv6 address, if one is obtained, or the BR IPv6 address
-            otherwise.</t>
+	    <t hangText="Step 2">If the mapping rule is found in step 1, CE tries
+	    to derive a IPv6 destination address from IPv4 destination address or
+	    IPv4 destination address and destination port based on the mapping rule.
+	    If CE can derive the IPv6 destination address successfully, CE encapsulates
+	    the IPv4 packet in IPv6 whose destination address is set to the derived
+	    IPv6 address. If the mapping rule is not found in step 1, CE encapsulates
+	    the IPv4 packet in IPv6 whose destination address is set to BR IPv6 address.
+	    Then CE forwards the encapsulated packet via IPv6 interface. If the length
+	    of the encapsulated IPv6 packet exceeds the MTU of the IPv6 interface, the
+	    fragmentation should be done in IPv6. Before the encapsulation is done,
+	    CE may rewrite the datagram ID in IPv4. In case of shared IPv4 address,
+	    the datagram ID must be unique within CEs sharing the same IPv4 address.
+	    Hence, CE may assign the unique value and rewrite the datagram ID in IPv4
+	    to this value. This value may be assigned within the port-range assigned
+	    to CE to keep the uniqueness within CE sharing same IPv4 address.</t>
 	  </list></t>
 
 	  <t>(d) CE reception of an IPv6 packet</t>
 	  <t><list hangIndent="22" style="hanging">
-	    <t hangText="Step 1">The CE checks that a CE IPv6 address is successfully
-            derived from the source of the IPv4 encapsulated packet, AND that it is equal
-	    to the source address of the encapsulating packet. In case of success: (1) if
-	    the length of CE 4rd prefixes exceeds 32 bits, the Datagram ID of the packet
-	    is replaced by a locally generated one; (2) the IPv4 packet is forwarded via
-	    the IPv4 interface.</t>
+	    <t hangText="Step 1">If the received IPv6 packet is fragmented, the reassembly
+	    should be done in IPv6 at first. Once CE obtains a complete IPv6 packet, CE
+	    checks the IPv4 source address in the encapsulated IPv4 packet. If the mapping
+	    rule is found from the IPv4 source address, CE tries to derive a CE IPv6
+ 	    address from the IPv4 source address or the IPv4 source address and the source
+ 	    port based on the mapping rule and then checks that the IPv6 source address of
+	    the encapsulating IPv6 packet is matched to it. If the mapping rule is not found,
+	    CE checks that the IPv6 source address is matched to BR IPv6 address. In case
+	    of success, CE decapsulates the IPv4 packet and forward it via the IPv4
+	    interface.</t>
 	  </list></t>
+        <!--
 	</section>
+        -->
 
 <!-- 	<section anchor="multiple-mapping-rule-behavior" title="Domains having Multiple Mapping Rules"> -->
 <!-- 	  <t>Some ISP will want to use 4rd in networks having several Domain 4rd -->
@@ -718,7 +754,6 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	  <!-- Reference RFC5508??? -->
 
 	</section>
-
 
       </section>
     </section>
