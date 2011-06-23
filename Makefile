@@ -2,7 +2,7 @@
 # Ole Troan, ot@cisco.com
 # April 2009
 
-REVISION=02
+REVISION=01
 DRAFT=draft-despres-softwire-4rd.txt \
 
 XML2RFC=./xml2rfc/xml2rfc.tcl
