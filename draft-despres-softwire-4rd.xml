@@ -240,29 +240,67 @@
         Embedded Address bits embedded in the IPv6 address identify an
         IPv4 prefix, IPv4 address or part of IPv4 address and port
         set.</t>
+
+	<t hangText="Shared IPv4 address:">An IPv4 address that is
+	shared among multiple nodes. Each node has a separate part of
+	the transport layer port space.</t>
+
       </list></t>
     </section>
 
-    <section title="Protocol Specification" anchor="protocol-spec">
-      <!-- 
-      <section anchor="general-principles" title="General Principles">
-	*** Remove section.
-	<t>The principle of the 4rd protocol is that IPv4 packets, or in case of
-   	shared IPv4 addresses IPv4 datagrams, traverse a 4rd domain by means
-   	of automatic IPv4 in IPv6 tunnels. IPv6 addresses of destination
-   	tunnel endpoints are statelessly derived from IPv4 destinations,
-   	based on some mapping rule parameters, in such a way that tunnels
-   	between CE's follow direct IPv6 paths (i.e. without having to go via
-   	BR's).  IPv4 destinations used for these mappings are either IPv4
-   	addresses alone or IPv4 addresses + ports depending on whether global
-   	addresses assigned to CE's are exclusive or shared.</t>
+    <section title="4rd Configuration" anchor="4rd-configuration">
+      <t>The IPv4 prefix, IPv4 address or shared IPv4 address for use
+      at a customer site is created by extracting the IPv4 embedded
+      address (EA bits) from an IPv6 prefix. Combined with the 4rd
+      IPv4 prefix, the IPv4 prefix, IPv4 address or shared IPv4
+      address is automatically created by the CE for the customer site
+      when IPv6 service is obtained.</t>
+
+      <t>For a given 4rd domain, the BR and CE MUST be configured with
+      the following 4rd elements. The configured values for these four
+      4rd elements are identical for all CEs and BRs within a given
+      4rd domain.</t>
+
+      <t><list hangIndent="22" style="hanging">
+	<t hangText="Domain IPv6 prefix"></t>
+	<t hangText="Domain 4rd prefix"></t>
+	<t hangText="IPv6 prefix length"></t>
+	<t hangText="Domain IPv6 suffix"></t>
+	<t hangText="BR IPv6 address(es)"></t>
+      </list></t>
+
+      <section title="Customer Edge Configuration">
+
+	<t>The four 4rd elements are set to values that are the same
+	across all CEs within a 4rd domain. The values may be
+	configured in a variety of manners, including provisioning
+	methods such as the Broadband Forum's "TR-69" [TR069]
+	Residential Gateway management interface, an XML-based object
+	retrieved after IPv6 connectivity is established, a DNS
+	record, an SMIv2 MIB [RFC2578], or manual configuration by an
+	administrator. A companion document [ref] describes how to
+	configure the necessary parameters via a single IPv6 DHCP
+	option. A CE that allows IPv6 configuration by IPv6 DHCP
+	SHOULD implement this option. Other configuration and
+	management methods may use the format described by this option
+	for consistency and convenience of implementation on CEs that
+	support multiple configuration methods.</t>
+
+	<t>The only remaining provisioning information the CE requires
+	in order to calculate the 4rd address and enable IPv6
+	connectivity is an IPv6 prefix for the CE. This CE IPv6 prefix
+	is configured as part of obtaining IPv6 Internet access (i.e.,
+	configured via SLAAC, DHCPv6, DHCPv6 PD, or otherwise).</t>
+
+	<t>A single 4rd CE MAY be connected to more than one 4rd
+	domain. Each domain a given CE operates within would require
+	its own set of 4rd configuration elements and would generate
+	its own 4rd address.</t>
+
       </section>
-      -->
+    </section>
 
       <!-- 
-      - Add introduction to the protocol
-        Parts: Algorithm, Mapping rules, Configuration parameters, encapsulation
-
         IPv6 address
            EA + configured parameters
            |
@@ -270,20 +308,9 @@
           f(x) == IPv4 address / IPv4 address + port range
 
 	  *** Use the 5969 as template
-
       -->
 
-      <section anchor="mapping-rule-parameters" title="Mapping-Rule Parameters">
-	<t>Both CE's and BR's have to know the BR IPv6 address of their domain
-        as well as, for each mapping rule, the following parameters:</t>
-
-        <t><list style="symbols">
-	<t>Domain IPv6 prefix</t>
-	<t>Domain 4rd prefix</t>
-	<t>IPv6 prefix length</t>
-	<t>Domain IPv6 suffix (optional - default ::/0)</t>
-	</list></t>
-      </section>
+      <section anchor="mapping-rule-parameters" title="Algorithmic mapping">
 
       <section anchor="mapping-rules" title="Mapping Rules">
         <section anchor="mapping-prefix" title="From a CE IPv6 Prefix to a CE 4rd Prefix">
@@ -725,20 +752,6 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
       </section>
     </section>
 
-    <section anchor="configuration" title="4rd Configuration">
-
-      <t>A CE can acquire 4rd parameters of its 4rd domain in various
-      ways: manual configuration by an administrator, software
-      download by the ISP, a new DHCPv6 option, etc. A companion
-      document [ref] describes how to configure the necessary
-      parameters via DHCPv6 <xref target="RFC3315"></xref>.  A CE that
-      allows IPv6 configuration by DHCPv6 SHOULD implement this
-      option. Other configuration and management methods, MAY use the
-      format described by this option for consistency and convenience
-      of implementation on CEs that support multiple configuration
-      methods.</t>
-
-    </section>
 
     <section anchor="security" title="Security Considerations">
       <t><list hangIndent="22" style="hanging">
