@@ -4,16 +4,16 @@
 Internet Engineering Task Force                               R. Despres
 Internet-Draft                                                 RD-IPtech
 Intended status: Standards Track                             T. Murakami
-Expires: December 18, 2011                                   IP Infusion
+Expires: December 25, 2011                                   IP Infusion
                                                            S. Matsushima
                                                                 SoftBank
                                                                 O. Troan
                                                                    cisco
-                                                           June 16, 2011
+                                                           June 23, 2011
 
 
 IPv4 Residual Deployment on IPv6 infrastructure - protocol specification
-                     draft-despres-softwire-4rd-02
+                     draft-despres-softwire-4rd-01
 
 Abstract
 
@@ -38,7 +38,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on December 18, 2011.
+   This Internet-Draft will expire on December 25, 2011.
 
 Copyright Notice
 
@@ -52,7 +52,7 @@ Copyright Notice
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 1]
+Despres, et al.         Expires December 25, 2011               [Page 1]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -69,27 +69,26 @@ Table of Contents
    1.  Introduction . . . . . . . . . . . . . . . . . . . . . . . . .  3
    2.  Requirements Language  . . . . . . . . . . . . . . . . . . . .  4
    3.  Terminology  . . . . . . . . . . . . . . . . . . . . . . . . .  4
-   4.  Protocol Specification . . . . . . . . . . . . . . . . . . . .  5
-     4.1.  Mapping-Rule Parameters  . . . . . . . . . . . . . . . . .  5
-     4.2.  Mapping Rules  . . . . . . . . . . . . . . . . . . . . . .  6
-       4.2.1.  From a CE IPv6 Prefix to a CE 4rd Prefix . . . . . . .  6
-       4.2.2.  From a CE 4rd Prefix to a Port-set ID  . . . . . . . .  6
-       4.2.3.  From a Port-Set ID to a Port Set . . . . . . . . . . .  7
-       4.2.4.  From an IPv4 Address or IPv4 Address + Port to a
-               CE IPv6 Address  . . . . . . . . . . . . . . . . . . .  9
-     4.3.  Encapsulation and Fragmentation Consideration  . . . . . . 10
-     4.4.  BR and CE behaviors  . . . . . . . . . . . . . . . . . . . 11
-       4.4.1.  Domains having only One Mapping rule . . . . . . . . . 11
-       4.4.2.  ICMP . . . . . . . . . . . . . . . . . . . . . . . . . 12
-   5.  4rd Configuration  . . . . . . . . . . . . . . . . . . . . . . 12
-   6.  Security Considerations  . . . . . . . . . . . . . . . . . . . 13
-   7.  IANA Consideration . . . . . . . . . . . . . . . . . . . . . . 13
-   8.  Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 14
-   9.  TODO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
-   10. References . . . . . . . . . . . . . . . . . . . . . . . . . . 14
-     10.1. Normative References . . . . . . . . . . . . . . . . . . . 14
-     10.2. Informative References . . . . . . . . . . . . . . . . . . 14
-   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 15
+   4.  4rd Configuration  . . . . . . . . . . . . . . . . . . . . . .  5
+     4.1.  Customer Edge Configuration  . . . . . . . . . . . . . . .  6
+   5.  Algorithmic mapping  . . . . . . . . . . . . . . . . . . . . .  6
+     5.1.  Mapping Rules  . . . . . . . . . . . . . . . . . . . . . .  6
+       5.1.1.  From a CE IPv6 Prefix to a CE 4rd Prefix . . . . . . .  6
+       5.1.2.  From a CE 4rd Prefix to a Port-set ID  . . . . . . . .  7
+       5.1.3.  From a Port-Set ID to a Port Set . . . . . . . . . . .  8
+       5.1.4.  From an IPv4 Address or IPv4 Address + Port to a
+               CE IPv6 Address  . . . . . . . . . . . . . . . . . . . 10
+   6.  Encapsulation and Fragmentation Consideration  . . . . . . . . 11
+   7.  BR and CE behaviors  . . . . . . . . . . . . . . . . . . . . . 12
+     7.1.  ICMP . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+   8.  Security Considerations  . . . . . . . . . . . . . . . . . . . 14
+   9.  IANA Consideration . . . . . . . . . . . . . . . . . . . . . . 15
+   10. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 15
+   11. TODO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+   12. References . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+     12.1. Normative References . . . . . . . . . . . . . . . . . . . 16
+     12.2. Informative References . . . . . . . . . . . . . . . . . . 16
+   Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 17
 
 
 
@@ -108,7 +107,8 @@ Table of Contents
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 2]
+
+Despres, et al.         Expires December 25, 2011               [Page 2]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -120,12 +120,11 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    [I-D.ietf-softwire-dual-stack-lite], 4rd is designed to allow IPv4
    traffic to be delivered over an IPv6 network without the direct
    provisioning of IPv4 addresses. 4rd can provide an IPv4 prefix, an
-   IPv4 address or a shared IPv4 address to end users.  Like 6rd
-   [RFC5969], 4rd is operated in a fully stateless manner within the SP
-   network.  The motivation for a stateless alternative to Dual-Stack
-   Lite is described in "Motivations for Stateless IPv4 over IPv6
-   Migration Solutions"
-   [I-D.operators-softwire-stateless-4v6-motivation].
+   IPv4 address or a shared IPv4 address.  Like 6rd [RFC5969], 4rd is
+   operated in a fully stateless manner within the SP network.  The
+   motivation for a stateless alternative to Dual-Stack Lite is
+   described in "Motivations for Stateless IPv4 over IPv6 Migration
+   Solutions" [I-D.operators-softwire-stateless-4v6-motivation].
 
    4rd relies on IPv6 and is designed to deliver production-quality
    dual-stack service while allowing IPv4 to be phased out within the SP
@@ -143,6 +142,13 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    an automatic tunneling abstraction similar to the Non-Broadcast
    Multiple Access (NBMA) [RFC2491] model.
 
+   The 4rd algorithmic mapping is also used to automatically provision
+   IPv4 addresses and allocating a set of non-overlapping ports for each
+   4rd CE.  The "SP-facing" (i.e., "WAN") side of the 4rd CE, operate as
+   native IPv6 interface with no need for IPv4 operation or support.  On
+   the "end-user-facing" (i.e., "LAN") side of a CE, IPv6 and IPv4 are
+   implemented as for any native dual-stack service delivered by the SP.
+
    A 4rd domain consists of 4rd Customer Edge (CE) routers and one or
    more 4rd Border Relays (BRs).  IPv4 packets encapsulated by 4rd
    follow the IPv6 routing topology within the SP network between CEs
@@ -151,26 +157,18 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    from outside a given 4rd domain.  As 4rd is stateless, BRs may be
    reached using anycast for failover and resiliency.
 
-   On the "end-user-facing" (i.e., "LAN") side of a CE, IPv6 and IPv4
-   are implemented as for any native dual-stack service delivered by the
-   SP.  On the "SP-facing" (i.e., "WAN") side of the 4rd CE,
-   provisioning of the interface itself, IPv6 and datalink
-   encapsulation, as well as control protocols such as IPv6 Neighbor
-   Discovery, DHCPv6, etc. all operate as native IPv6 with no need for
-   IPv4 operation or support.
-
    4rd does not require any stateful NAPT [RFC3022] functions at the BRs
    or elsewhere within the SP network.  Instead, 4rd allows for sharing
+   of IPv4 addresses among multiple sites by automatically allocating a
+   set of non-overlapping ports for each CE as part of the stateless
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 3]
+Despres, et al.         Expires December 25, 2011               [Page 3]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-   of IPv4 addresses among multiple sites by automatically allocating a
-   set of non-overlapping ports for each CE as part of the stateless
    mapping function.  It is expected that the CE will, in turn, perform
    local IPv4 Network Address and Port Translation (NAPT) [RFC3022]
    functions for the site as is commonly performed today, except
@@ -189,142 +187,189 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 3.  Terminology
 
-   4rd domain (Domain):  an IPv6 routing network operated by an ISP and
-                         comprising one or several 4rd BR's having the
-                         same set of parameters.  It offers to its 4rd-
-                         capable CE's global IPv4 connectivity, both
-                         outgoing and incoming, and with exclusive or
-                         shared IPv4 addresses.
+   4rd domain (Domain):  A set of 4rd CEs and BRs connected to the same
+                         virtual 4rd link.  A service provider may
+                         deploy 4rd with a single 4rd domain, or may
+                         utilize multiple 4rd domains.  Each domain
+                         requires a separate 4rd prefix.
 
-   4rd Border Relay (BR):  A 4rd-capable router managed by the service
-                         provider at the edge of a 4rd domain.  A BR has
-                         an IPv6-enabled interface connected to the ISP
-                         network, and an IPv4 virtual interface acting
-                         as an endpoint for the automatic 4rd tunnel.
-                         This tunnel (IPv4 in IPv6) is between the BR
-                         and all CE's of the Domain.
+   4rd Border Relay (BR):  A 4rd-enabled router managed by the service
+                         provider at the edge of a 4rd domain.  A Border
+                         Relay router has at least one of each of the
+                         following: an IPv6-enabled interface, a 4rd
+                         virtual interface acting as an endpoint for the
+                         4rd IPv4 in IPv6 tunnel, and an IPv4 interface
+                         connected to the native IPv4 network.  A 4rd BR
+                         may also be referred to simply as a "BR" within
+                         the context of 4rd.
 
-   4rd Customer Edge (CE):  A node at the border between a customer
-                         network and the 4rd domain.  This node has an
-                         IPv6 interface connected to the ISP network,
-                         and a virtual IPv4 interface acting as the end-
-                         point of the automatic 4rd tunnel.  This tunnel
-                         (IPv4 in IPv6) is between the CE and all other
-                         CE's and all BR's of the Domain.  It may be a
-                         host, a router, or both.
+   4rd Customer Edge (CE):  A device functioning as a Customer Edge
+                         router in a 4rd deployment.  In a residential
+                         broadband deployment, this type of device is
+                         sometimes referred to as a "Residential
+                         Gateway" (RG) or "Customer Premises Equipment"
+                         (CPE).  A typical 4rd CE serving a residential
+                         site has one WAN side interface, one or more
+                         LAN side interfaces, and a 4rd virtual
+                         interface.  A 4rd CE may also be referred to
+                         simply as a "CE" within the context of 4rd.
+
+
+
+
+
+
+
+Despres, et al.         Expires December 25, 2011               [Page 4]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
 
    CE IPv6 prefix:       The IPv6 prefix assigned to a CE by other means
                          than 4rd itself, and used by 4rd to derive a CE
                          4rd prefix.
 
-
-
-
-Despres, et al.         Expires December 18, 2011               [Page 4]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
-   CE IPv6 address:      In the context of 4rd, the IPv6 address used to
-                         reach a CE from other CE's and from BR's.  A CE
-                         typically has another IPv6 address, assigned to
-                         it at its IPv6 interface without relationship
-                         with 6rd.
+   CE IPv6 address:      The IPv6 address given to the CE as part of
+                         normal IPv6 Internet access.  This address is
+                         used by a 4rd CE to create the 4rd prefix as
+                         well as to send and receive IPv6-encapsulated
+                         IPv4 packets.
 
    CE 4rd prefix:        The 4rd prefix of the CE.  It is derived from
                          the CE IPv6 prefix by a mapping rule according
-                         to Section 4.2.  Depending on its length, it is
+                         to Section 5.1.  Depending on its length, it is
                          an IPv4 prefix, an IPv4 address, or a shared
                          IPv4 address followed by a Port-set ID
-                         (Section 4.2.2).
+                         (Section 5.1.2).
 
    Port-set ID:          In a CE 4rd prefix longer than 32 bits, bits
                          that follow the first 32.  It algorithmically
                          identifies a set of ports exclusively assigned
-                         to the CE.  As specified in Section 4.3.3, the
-                         set can comprise up to 4 disjoint port ranges.
+                         to the CE.  As specified in Section
+                         Section 5.1.2, the set can comprise up to 4
+                         disjoint port ranges.
 
    Domain IPv6 prefix:   An IPv6 prefix assigned by an ISP to a 4rd
                          domain.
 
    Domain IPv4 prefix:   A 4rd prefix assigned by an ISP to the 4rd
-                         domain.  In typical operator applications, it
-                         is an IPv4 prefix.  In a residential site in
-                         which an already shared IPv4 address has to be
-                         shared even more among several hosts, it may
-                         have more than 32 bits.
+                         domain.
 
-   IPv4 EA-bits:         IPv4 Embedded Address bits embedded in the IPv6
-                         address identifying an IPv4 prefix, IPv4
-                         address or part of IPv4 address and port set.
+   IPv4 Embedded Address (EA) bits:  The IPv4 EA-bits in the IPv6
+                         address identify an IPv4 prefix, IPv4 address
+                         or part of IPv4 address and port set.
+
+   Shared IPv4 address:  An IPv4 address that is shared among multiple
+                         nodes.  Each node has a separate part of the
+                         transport layer port space.
 
 
-4.  Protocol Specification
+4.  4rd Configuration
 
-4.1.  Mapping-Rule Parameters
-
-   Both CE's and BR's have to know the BR IPv6 address of their domain
-   as well as, for each mapping rule, the following parameters:
-
-   o  Domain IPv6 prefix
-
-   o  Domain 4rd prefix
-
-   o  IPv6 prefix length
+   The IPv4 prefix, IPv4 address or shared IPv4 address for use at a
+   customer site is created by extracting the IPv4 embedded address (EA-
+   bits) from the IPv6 prefix delegated to the site.  Combined with the
+   4rd IPv4 prefix, the IPv4 prefix, IPv4 address or shared IPv4 address
+   is automatically created by the CE for the customer site when IPv6
+   service is obtained.
 
 
 
 
-
-Despres, et al.         Expires December 18, 2011               [Page 5]
+Despres, et al.         Expires December 25, 2011               [Page 5]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-   o  Domain IPv6 suffix (optional - default ::/0)
+   For a given 4rd domain, the BR and CE MUST be configured with a set
+   of mapping rules and BR IPv6 addresses.  The configured values for
+   these elements MUST be identical for all CEs and BRs within a given
+   4rd domain.
 
-4.2.  Mapping Rules
+   A mapping rule consist of the following elements: a Domain IPv6
+   prefix and prefix length, a Domain 4rd prefix and prefix length, and
+   a Domain IPv6 suffix and length.  See section (Section 5.1) for a
+   detailed description of mapping rules.
 
-4.2.1.  From a CE IPv6 Prefix to a CE 4rd Prefix
+4.1.  Customer Edge Configuration
+
+   The 4rd configuration elements are set to values that are the same
+   across all CEs within a 4rd domain.  The values may be configured in
+   a variety of manners, including provisioning methods such as the
+   Broadband Forum's "TR-69" [TR069] Residential Gateway management
+   interface, an XML-based object retrieved after IPv6 connectivity is
+   established, a DNS record, an SMIv2 MIB [RFC2578], or manual
+   configuration by an administrator.  A companion document [ref]
+   describes how to configure the necessary parameters via IPv6 DHCP.  A
+   CE that allows IPv6 configuration by IPv6 DHCP SHOULD implement this
+   option.  Other configuration and management methods may use the
+   format described by this option for consistency and convenience of
+   implementation on CEs that support multiple configuration methods.
+
+   The only remaining provisioning information the CE requires in order
+   to calculate the 4rd address and enable IPv6 connectivity is an IPv6
+   prefix for the CE.  This CE IPv6 prefix is configured as part of
+   obtaining IPv6 Internet access (i.e., configured via SLAAC, DHCPv6,
+   DHCPv6 PD, or otherwise).
+
+   A single 4rd CE MAY be connected to more than one 4rd domain.  Each
+   domain a given CE operates within would require its own set of 4rd
+   configuration elements and would generate its own 4rd address.
+
+
+5.  Algorithmic mapping
+
+5.1.  Mapping Rules
+
+5.1.1.  From a CE IPv6 Prefix to a CE 4rd Prefix
 
    A 4rd mapping rule establishes a 1:1 mapping between CE IPv6 prefixes
    and CE 4rd prefixes.
 
 
+
+
+
+
+
+Despres, et al.         Expires December 25, 2011               [Page 6]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
+
          <---------------- CE IPv6 prefix (max 128) -------------->
          +-------------------------------+------------------------+
-         |      Domain IPv6 prefix       |        EA bits         |
+         |      Domain IPv6 prefix       |        EA-bits         |
          +-------------------------------+------------------------+
-         <-- Domain IPv6 Prefix length ->:<--  EA bit length  --->:
+         <-- Domain IPv6 Prefix length ->:<--  EA-bit length  --->:
                                          :                        :
                                          :         ||             :
                                          :         \/             :
                                          :                        :
-                                         :<--  EA bit length  --->:
+                                         :<--  EA-bit length  --->:
                      +-------------------+------------------------+
-                     | Domain 4rd prefix |        EA bits         |
+                     | Domain 4rd prefix |        EA-bits         |
                      +-------------------+------------------------+
                      <----------- CE 4rd prefix (max 47) --------->
 
             Figure 1: From a CE IPv6 Prefix to a CE 4rd Prefix
 
-   A CE derives its CE 4rd prefix from the IPv6 prefix it has been
-   delegated on the IPv6 network, using for this parameters of the
-   applicable mapping rule.  If the domain has several mapping rules,
-   that which applies is that whose Domain IPv6 prefix is at the
-   beginning of the CE IPv6 prefix.  As shown in Figure 1, the CE 4rd
-   prefix is made of the Domain 4rd prefix followed by the IPv4 EA bits,
-   where the IPv4 EA bits is the remainder of the CE IPv6 prefix after
-   the Domain IPv6 prefix (the length of the Domain IPv6 prefix is
-   defined by the mapping rule).
+   A CE derives its CE 4rd prefix from the CE IPv6 prefix, using
+   parameters of the applicable mapping rule.  If the domain has several
+   mapping rules, the rule that applies is that whose Domain IPv6 prefix
+   has the longest match with the CE IPv6 prefix.  As shown in Figure 1,
+   the CE 4rd prefix is created by concatenating the Domain 4rd prefix
+   with the IPv4 EA-bits, where the IPv4 EA-bits is the remainder of the
+   CE IPv6 prefix after the Domain IPv6 prefix (the length of the Domain
+   IPv6 prefix is defined by the mapping rule).
 
-4.2.2.  From a CE 4rd Prefix to a Port-set ID
+5.1.2.  From a CE 4rd Prefix to a Port-set ID
 
    Depending on its length, a CE 4rd prefix is either an IPv4 prefix, a
    full IPv4 address, or a shared IPv4 address followed by a Port-set ID
    (Figure 2).  If it includes a port set ID, this ID specifies which
    ports are assigned to the the CE for its exclusive use
-   (Section 4.2.3).
+   (Section 5.1.3).
 
 
 
@@ -332,7 +377,18 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 6]
+
+
+
+
+
+
+
+
+
+
+
+Despres, et al.         Expires December 25, 2011               [Page 7]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -359,18 +415,14 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
                    Figure 2: Variants of CE 4rd prefixes
 
-4.2.3.  From a Port-Set ID to a Port Set
+5.1.3.  From a Port-Set ID to a Port Set
 
-   Each value of a Port-set ID specifies which ports can be used by any
-   protocol whose header format starts with source and destination ports
-   (UDP, TCP, SCTP, etc.).  Design constraint of the algorithm are the
-   following:
+   The value of a Port-set ID specifies which ports can be used by a
+   transport layer protocol (UDP, TCP, SCTP etc).  Design constraint of
+   the algorithm are the following:
 
    Fairness with respect to special-value ports:  No port-set must
-                         contain any port from 0 to 4095.  (These ports,
-                         which have more value than others in OS's, are
-                         normally not used in dynamic port assignments
-                         to applications).
+                         contain any well-known ports [IANA reference].
 
    Fairness with respect to the number of ports  For a Port-set-ID's
                          having the same length, all sets must have the
@@ -378,22 +430,23 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
    Exhaustiveness        For any Port-set-ID length, the aggregate of
                          port sets assigned for all values must include
-                         all ordinary-value ports (from 4,096 to
-                         65,535).
+                         all ordinary-value ports.
 
    If the Port-set ID has 1 to 12 bits, the set comprises 4 port ranges.
    As shown in Figure 3, each port range is defined by its port prefix,
    made of a range-specific "head" followed by the Port-set ID.  Head
    values are in binary 1, 01, 001, and 0001.  They are chosen to
+   exclude ports 0-4095 and only them.
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 7]
+
+
+
+
+Despres, et al.         Expires December 25, 2011               [Page 8]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
-   exclude ports 0-4095 and only them.
 
 
                    <------- Port (16 bits) -------->
@@ -426,17 +479,6 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    the port range having head 1 is assigned.  (In these three cases, the
    smallest port range has only one element).
 
-   NOTE: The port set assigned to a CE may be further subdivided by the
-   CE among several functions such as the following: (1) an IPv4 NAPT
-   (possibly configurable to do port forwarding, and possibly doing
-   dynamic port assignments to hosts with UPnP and/or NAT-PMP); (2) an
-   API for applications in the CE that need dynamic port assignments;
-   (3) a new 4rd BR which assigns to its CE's subsets of its own port
-   set.  How to chose among these functions and/or combine them is
-   beyond the scope of this specification.  Readers are referred to
-   documents dealing with operational applicability in diverse
-   environments, e.g. [draft-sun-intarea-4rd-applicability] prepared in
-   parallel of this one.
 
 
 
@@ -444,12 +486,26 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 8]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Despres, et al.         Expires December 25, 2011               [Page 9]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-4.2.4.  From an IPv4 Address or IPv4 Address + Port to a CE IPv6 Address
+5.1.4.  From an IPv4 Address or IPv4 Address + Port to a CE IPv6 Address
 
 
                        Port-set ID
@@ -459,14 +515,14 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
       |IPv4 shared address| '  |
       +---------------+---+----+
                       <-------->
-                    CE-index length
+                     EA-bit length
                       :        :
                       :   ||   :
                       :   ||   :
                       :   \/   : Domain IPv6 suffix
                       :        :  |
    +------------------+--------+--|-+----------------------------------+
-   |Domain IPv6 prefix| EA bits|  ' |                  0               |
+   |Domain IPv6 prefix| EA-bits|  ' |                  0               |
    +------------------+--------+----+----------------------------------+
    <------------ max 64 ------------>
    <---------------------- CE IPv6 address (128) --------------------->
@@ -474,7 +530,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    Figure 4: From 4rd Prefix to IPv6 address (shared IPv4 address case)
 
    In order to find whether a CE IPv6 address can be derived from an
-   IPv4 address, or an IPv6 address + a port, a mapping rule has to be
+   IPv4 address, or an IPv4 address + a port, a mapping rule has to be
    found that matches the IPv4 information:
 
    o  If a mapping rule has a length L of CE IPv4 prefixes which does
@@ -500,12 +556,12 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 18, 2011               [Page 9]
+Despres, et al.         Expires December 25, 2011              [Page 10]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-4.3.  Encapsulation and Fragmentation Consideration
+6.  Encapsulation and Fragmentation Consideration
 
    Maximum transmission unit (MTU) and fragmentation issues for IPv6 in
    IPv4 tunneling are discussed in detail in Section 3.2 of RFC 4213
@@ -535,9 +591,9 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
    For 4rd domain traversal, IPv4 packets are encapsulated in IPv6
    packets whose Next header is set to 4 (i.e.  IPv4).  If fragmentation
-   of IPv6 packets is needed, it is performed according to [RFC2460],
-   and as illustrated in [deleted].  Absent more specific information,
-   the path MTU of a 4rd Domain has to be set to 1280 [RFC2460].
+   of IPv6 packets is needed, it is performed according to [RFC2460].
+   Absent more specific information, the path MTU of a 4rd Domain has to
+   be set to 1280 [RFC2460].
 
    In domains where IPv4 addresses are not shared, IPv6 destinations are
    derived from IPv4 addresses alone.  Thus, each IPv4 packet can be
@@ -556,7 +612,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 18, 2011              [Page 10]
+Despres, et al.         Expires December 25, 2011              [Page 11]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -577,109 +633,157 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    implies an update of its Header-checksum field, by adding to it the
    one's complement difference between the old and the new values.
 
-4.4.  BR and CE behaviors
 
-4.4.1.  Domains having only One Mapping rule
+7.  BR and CE behaviors
 
    (a) BR reception of an IPv4 packet
 
-   Step 1                If the length of CE 4rd prefixes does not
-                         exceed 32 bits, the BR proceeds to step 2.
-                         Otherwise, and unless the packet contains a
-                         complete IPv4 datagram, IPv4 datagram
-                         reassembly is performed.  If a complete
-                         datagram is available, the BR proceeds to step
-                         2 as though the datagram had been received in a
-                         single packet.
+   Step 1                BR tries to find an appropriate mapping rule
+                         from the IPv4 destination address in the
+                         received IPv4 packet.  BR searches the mapping
+                         rule which has specific Domain 4rd prefix
+                         matched to the IPv4 destination address by
+                         using the longest match manner.  If the mapping
+                         rule is not found, BR discards the received
+                         packet.  If the length of CE 4rd prefix
+                         associated with the mapping rule does not
+                         exceed 32 bits, BR proceeds to step 2.  If the
+                         length of CE 4rd prefix exceeds 32 bits, BR
+                         checks that the received packet contains a
+                         complete IPv4 datagram.  If the packet is
+                         fragmented, BR tries to reassemble the packet.
+                         Once BR can obtain the complete IPv4 packet, BR
+                         proceeds to step 2 as though the datagram has
+                         been received in a single packet.
 
-   Step 2                The BR checks that the IPv4 source doesn't
-                         start with the Domain 4rd prefix, and that a CE
-                         IPv6 address is successfully derived from the
-                         IPv4 destination.  In case of success, the
-                         packet is encapsulated and forwarded to this CE
-                         IPv6 address via the IPv6 interface.
+   Step 2                BR generates a CE IPv6 address from the IPv4
+                         destination address or the IPv4 destination
+                         address and the destination port based on the
+                         mapping rule found in step 1.  If the CE IPv6
+                         address can be successfully generated, BR
+                         encapsulates the complete IPv4 packet in IPv6
+                         and forwards the IPv6 packet via the IPv6
+                         interface.  If the length of the IPv6
+                         encapsulated packet exceeds the MTU of the IPv6
+
+
+
+Despres, et al.         Expires December 25, 2011              [Page 12]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
+
+                         interface, the fragmentation should be done in
+                         IPv6.
 
    (b) BR reception of an IPv6 packet
 
-   Step 1                The BR checks that a CE IPv6 address is
-                         successfully derived from the source of the
-                         IPv4 encapsulated packet, and that the source
-                         address of the encapsulating packet is equal to
-                         it.  In case of success: (1) if the length of
-                         CE 4rd prefixes exceeds 32 bits, the Datagram
-                         ID of the packet is replaced by a locally
-                         generated one; (2) the IPv4 packet is forwarded
-
-
-
-Despres, et al.         Expires December 18, 2011              [Page 11]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
-                         via the IPv4 interface.
+   Step 1                If the received IPv6 packet is fragmented, the
+                         reassembly should be done in IPv6 at first.
+                         Once BR obtains a complete IPv6 packet, BR
+                         checks the IPv4 source address in the
+                         encapsulated IPv4 packet.  If the mapping rule
+                         is found from the IPv4 source address, BR tries
+                         to derive a CE IPv6 address from the IPv4
+                         source address or the IPv4 source address and
+                         the source port in the IPv4 encapsulated packet
+                         and that the IPv6 source address of the
+                         encapsulating IPv6 packet is equal to it.  In
+                         case of success, BR decapsulates the IPv4
+                         packet and forward it via the IPv4 interface.
+                         If the mapping rule is not found, BR discards
+                         the received packet.
 
    (c) CE reception of an IPv4 packet
 
-   Step 1                If the CE 4rd prefix of the CE does not exceed
-                         32 bits and the IPv4 destination address starts
-                         with the Domain 4rd prefix, the CE proceeds to
-                         step 2.  Otherwise, and unless the packet
-                         contains a complete IPv4 datagram, IPv4
-                         datagram reassembly is performed.  If a
-                         complete datagram is available, the BR proceeds
-                         to step 2 as though the datagram had been
-                         received in a single packet.
+   Step 1                CE tries to find an appropriate mapping rule
+                         from the IPv4 destination address in the
+                         received IPv4 packet.  CE searches the mapping
+                         rule which has specific Domain 4rd prefix
+                         matched to the IPv4 destination address by
+                         using the longest match manner.  If the mapping
+                         rule is found, CE checks the length of CE 4rd
+                         prefix.  If the length does not exceed 32 bits,
+                         CE proceeds to step 2.  It the legnth exceeds
+                         32 bits, CE checks that the received IPv4
+                         packet contains a complete IPv4 datagram.  If
+                         the packet is fragmented, CE tries to
+                         reassemble the packet.  Once CE can get the
+                         complete IPv4 packet, CE proceeds to step 2 as
+                         tought the datagram has been received in a
+                         single packet.  If the mapping rule is not
+                         found, CE proceeds to step 2.
 
-   Step 2                The CE tries tries to derive a CE IPv6 address
-                         from the IPv4 destination.  It then
-                         encapsulates the IPv4 packet into an IPv6
-                         packet whose destination is this CE IPv6
-                         address, if one is obtained, or the BR IPv6
-                         address otherwise.
-
-   (d) CE reception of an IPv6 packet
-
-   Step 1                The CE checks that a CE IPv6 address is
-                         successfully derived from the source of the
-                         IPv4 encapsulated packet, AND that it is equal
-                         to the source address of the encapsulating
-                         packet.  In case of success: (1) if the length
-                         of CE 4rd prefixes exceeds 32 bits, the
-                         Datagram ID of the packet is replaced by a
-                         locally generated one; (2) the IPv4 packet is
-                         forwarded via the IPv4 interface.
-
-4.4.2.  ICMP
-
-
-5.  4rd Configuration
-
-   A CE can acquire 4rd parameters of its 4rd domain in various ways:
-   manual configuration by an administrator, software download by the
-   ISP, a new DHCPv6 option, etc.  A companion document [ref] describes
-   how to configure the necessary parameters via DHCPv6 [RFC3315].  A CE
-   that allows IPv6 configuration by DHCPv6 SHOULD implement this
-   option.  Other configuration and management methods, MAY use the
-   format described by this option for consistency and convenience of
-   implementation on CEs that support multiple configuration methods.
+   Step 2                If the mapping rule is found in step 1, CE
+                         tries to derive a IPv6 destination address from
+                         IPv4 destination address or IPv4 destination
+                         address and destination port based on the
+                         mapping rule.  If CE can derive the IPv6
+                         destination address successfully, CE
+                         encapsulates the IPv4 packet in IPv6 whose
 
 
 
-
-
-Despres, et al.         Expires December 18, 2011              [Page 12]
+Despres, et al.         Expires December 25, 2011              [Page 13]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-6.  Security Considerations
+                         destination address is set to the derived IPv6
+                         address.  If the mapping rule is not found in
+                         step 1, CE encapsulates the IPv4 packet in IPv6
+                         whose destination address is set to BR IPv6
+                         address.  Then CE forwards the encapsulated
+                         packet via IPv6 interface.  If the length of
+                         the encapsulated IPv6 packet exceeds the MTU of
+                         the IPv6 interface, the fragmentation should be
+                         done in IPv6.  Before the encapsulation is
+                         done, CE may rewrite the datagram ID in IPv4.
+                         In case of shared IPv4 address, the datagram ID
+                         must be unique within CEs sharing the same IPv4
+                         address.  Hence, CE may assign the unique value
+                         and rewrite the datagram ID in IPv4 to this
+                         value.  This value may be assigned within the
+                         port-range assigned to CE to keep the
+                         uniqueness within CE sharing same IPv4 address.
+
+   (d) CE reception of an IPv6 packet
+
+   Step 1                If the received IPv6 packet is fragmented, the
+                         reassembly should be done in IPv6 at first.
+                         Once CE obtains a complete IPv6 packet, CE
+                         checks the IPv4 source address in the
+                         encapsulated IPv4 packet.  If the mapping rule
+                         is found from the IPv4 source address, CE tries
+                         to derive a CE IPv6 address from the IPv4
+                         source address or the IPv4 source address and
+                         the source port based on the mapping rule and
+                         then checks that the IPv6 source address of the
+                         encapsulating IPv6 packet is matched to it.  If
+                         the mapping rule is not found, CE checks that
+                         the IPv6 source address is matched to BR IPv6
+                         address.  In case of success, CE decapsulates
+                         the IPv4 packet and forward it via the IPv4
+                         interface.
+
+7.1.  ICMP
+
+
+8.  Security Considerations
 
    Spoofing attacks      With consistency checks between IPv4 and IPv6
                          sources that are performed on IPv4/IPv6 packets
-                         received by BR's and CE's (Section 4.4), 4rd
-                         does not introduce any opportunity for spoofing
+                         received by BR's and CE's (Section 7), 4rd does
+                         not introduce any opportunity for spoofing
                          attack that would not pre-exist in IPv6.
+
+
+
+
+Despres, et al.         Expires December 25, 2011              [Page 14]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
 
    Denial-of-service attacks  In 4rd domains where IPv4 addresses are
                          shared, the fact that IPv4 datagram reassembly
@@ -697,7 +801,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
                          [I-D.ietf-v6ops-tunnel-loops].  They cannot
                          exist with 4rd because each BRs checks that the
                          IPv6 source address of a received IPv6 packet
-                         is a CE address (Section 4.4.1 (b) and (b)).
+                         is a CE address Section 5.1.
 
    Attacks facilitated by restricted port sets  From hosts that are not
                          subject to ingress filtering of [RFC2827], some
@@ -714,22 +818,12 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
                          unrestricted port sets.
 
 
-7.  IANA Consideration
+9.  IANA Consideration
 
    This document makes no request of IANA.
 
 
-
-
-
-
-
-Despres, et al.         Expires December 18, 2011              [Page 13]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
-8.  Acknowledgements
+10.  Acknowledgements
 
    The authors wish to thank Mark Townsley for his active encouragements
    to pursue the 4rd approach since it was first introduced in
@@ -739,14 +833,22 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    deserves special recognition.
 
 
-9.  TODO
+
+
+
+Despres, et al.         Expires December 25, 2011              [Page 15]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
+
+11.  TODO
 
    CE NATs
 
 
-10.  References
+12.  References
 
-10.1.  Normative References
+12.1.  Normative References
 
    [RFC0791]  Postel, J., "Internet Protocol", STD 5, RFC 791,
               September 1981.
@@ -757,6 +859,10 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    [RFC2460]  Deering, S. and R. Hinden, "Internet Protocol, Version 6
               (IPv6) Specification", RFC 2460, December 1998.
 
+   [RFC2491]  Armitage, G., Schulter, P., Jork, M., and G. Harter, "IPv6
+              over Non-Broadcast Multiple Access (NBMA) networks",
+              RFC 2491, January 1999.
+
    [RFC3315]  Droms, R., Bound, J., Volz, B., Lemon, T., Perkins, C.,
               and M. Carney, "Dynamic Host Configuration Protocol for
               IPv6 (DHCPv6)", RFC 3315, July 2003.
@@ -764,7 +870,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    [RFC4291]  Hinden, R. and S. Deering, "IP Version 6 Addressing
               Architecture", RFC 4291, February 2006.
 
-10.2.  Informative References
+12.2.  Informative References
 
    [I-D.despres-softwire-sam]
               Despres, R., "Stateless Address Mapping (SAM) - a
@@ -778,18 +884,18 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
               Exhaustion", draft-ietf-softwire-dual-stack-lite-11 (work
               in progress), May 2011.
 
-
-
-Despres, et al.         Expires December 18, 2011              [Page 14]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
    [I-D.ietf-v6ops-tunnel-loops]
               Nakibly, G. and F. Templin, "Routing Loop Attack using
               IPv6 Automatic Tunnels: Problem Statement and Proposed
               Mitigations", draft-ietf-v6ops-tunnel-loops-07 (work in
               progress), May 2011.
+
+
+
+Despres, et al.         Expires December 25, 2011              [Page 16]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
 
    [I-D.operators-softwire-stateless-4v6-motivation]
               Boucadair, M., Matsushima, S., Lee, Y., Bonness, O.,
@@ -836,7 +942,13 @@ Authors' Addresses
 
 
 
-Despres, et al.         Expires December 18, 2011              [Page 15]
+
+
+
+
+
+
+Despres, et al.         Expires December 25, 2011              [Page 17]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -892,5 +1004,5 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 18, 2011              [Page 16]
+Despres, et al.         Expires December 25, 2011              [Page 18]
 

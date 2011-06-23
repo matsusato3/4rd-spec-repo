@@ -29,7 +29,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="std" docName="draft-despres-softwire-4rd-02"
+<rfc category="std" docName="draft-despres-softwire-4rd-01"
      ipr="trust200902">
   <!-- ***** FRONT MATTER ***** -->
 
@@ -136,14 +136,11 @@
 
       <t>The 4rd algorithmic mapping is also used to automatically
       provision IPv4 addresses and allocating a set of non-overlapping
-      ports for each 4rd CE.  On the "SP-facing" (i.e., "WAN") side of
-      the 4rd CE, provisioning of the interface itself, IPv6 and
-      datalink encapsulation, as well as control protocols such as
-      IPv6 Neighbor Discovery, DHCPv6, etc. all operate as native IPv6
-      with no need for IPv4 operation or support. On the other hand,
-      "customer-facing" (i.e., "LAN") side of a CE, IPv6 and IPv4 are
-      implemented as for any native dual-stack service delivered by
-      the SP.</t>
+      ports for each 4rd CE.  The "SP-facing" (i.e., "WAN") side of
+      the 4rd CE, operate as native IPv6 interface with no need for
+      IPv4 operation or support. On the "end-user-facing" (i.e.,
+      "LAN") side of a CE, IPv6 and IPv4 are implemented as for any
+      native dual-stack service delivered by the SP.</t>
 
       <t>A 4rd domain consists of 4rd Customer Edge (CE) routers and
       one or more 4rd Border Relays (BRs). IPv4 packets encapsulated
@@ -153,14 +150,6 @@
       to or are arriving from outside a given 4rd domain. As 4rd is
       stateless, BRs may be reached using anycast for failover and
       resiliency.</t>
-
-      <t>On the "end-user-facing" (i.e., "LAN") side of a CE, IPv6 and
-      IPv4 are implemented as for any native dual-stack service
-      delivered by the SP. On the "SP-facing" (i.e., "WAN") side of
-      the 4rd CE, provisioning of the interface itself, IPv6 and
-      datalink encapsulation, as well as control protocols such as
-      IPv6 Neighbor Discovery, DHCPv6, etc. all operate as native IPv6
-      with no need for IPv4 operation or support.</t>
 
       <t>4rd does not require any stateful NAPT <xref
       target="RFC3022"></xref> functions at the BRs or elsewhere
@@ -239,9 +228,8 @@
         ISP to the 4rd domain.</t>
 
         <t hangText="IPv4 Embedded Address (EA) bits:">The IPv4
-        Embedded Address bits embedded in the IPv6 address identify an
-        IPv4 prefix, IPv4 address or part of IPv4 address and port
-        set.</t>
+        EA-bits in the IPv6 address identify an IPv4 prefix, IPv4
+        address or part of IPv4 address and port set.</t>
 
 	<t hangText="Shared IPv4 address:">An IPv4 address that is
 	shared among multiple nodes. Each node has a separate part of
@@ -253,40 +241,39 @@
     <section title="4rd Configuration" anchor="4rd-configuration">
       <t>The IPv4 prefix, IPv4 address or shared IPv4 address for use
       at a customer site is created by extracting the IPv4 embedded
-      address (EA bits) from an IPv6 prefix. Combined with the 4rd
-      IPv4 prefix, the IPv4 prefix, IPv4 address or shared IPv4
-      address is automatically created by the CE for the customer site
-      when IPv6 service is obtained.</t>
+      address (EA-bits) from the IPv6 prefix delegated to the
+      site. Combined with the 4rd IPv4 prefix, the IPv4 prefix, IPv4
+      address or shared IPv4 address is automatically created by the
+      CE for the customer site when IPv6 service is obtained.</t>
 
       <t>For a given 4rd domain, the BR and CE MUST be configured with
-      the following 4rd elements. The configured values for these four
-      4rd elements are identical for all CEs and BRs within a given
-      4rd domain.</t>
+      a set of mapping rules and BR IPv6 addresses. The configured
+      values for these elements MUST be identical for all CEs and BRs within a
+      given 4rd domain.</t>
 
-      <t><list hangIndent="22" style="hanging">
-	<t hangText="Domain IPv6 prefix"></t>
-	<t hangText="Domain 4rd prefix"></t>
-	<t hangText="IPv6 prefix length"></t>
-	<t hangText="Domain IPv6 suffix"></t>
-	<t hangText="BR IPv6 address(es)"></t>
-      </list></t>
+      <t>A mapping rule consist of the following elements: a Domain
+      IPv6 prefix and prefix length, a Domain 4rd prefix and prefix
+      length, and a Domain IPv6 suffix and length. See <xref
+      target="mapping-rules">section</xref> for a detailed description
+      of mapping rules.</t>
+      
 
       <section title="Customer Edge Configuration">
 
-	<t>The four 4rd elements are set to values that are the same
-	across all CEs within a 4rd domain. The values may be
+	<t>The 4rd configuration elements are set to values that are
+	the same across all CEs within a 4rd domain. The values may be
 	configured in a variety of manners, including provisioning
 	methods such as the Broadband Forum's "TR-69" [TR069]
 	Residential Gateway management interface, an XML-based object
 	retrieved after IPv6 connectivity is established, a DNS
 	record, an SMIv2 MIB [RFC2578], or manual configuration by an
 	administrator. A companion document [ref] describes how to
-	configure the necessary parameters via a single IPv6 DHCP
-	option. A CE that allows IPv6 configuration by IPv6 DHCP
-	SHOULD implement this option. Other configuration and
-	management methods may use the format described by this option
-	for consistency and convenience of implementation on CEs that
-	support multiple configuration methods.</t>
+	configure the necessary parameters via IPv6 DHCP. A CE that
+	allows IPv6 configuration by IPv6 DHCP SHOULD implement this
+	option. Other configuration and management methods may use the
+	format described by this option for consistency and
+	convenience of implementation on CEs that support multiple
+	configuration methods.</t>
 
 	<t>The only remaining provisioning information the CE requires
 	in order to calculate the 4rd address and enable IPv6
@@ -302,17 +289,7 @@
       </section>
     </section>
 
-      <!-- 
-        IPv6 address
-           EA + configured parameters
-           |
-           v
-          f(x) == IPv4 address / IPv4 address + port range
-
-	  *** Use the 5969 as template
-      -->
-
-      <section anchor="mapping-rule-parameters" title="Algorithmic mapping">
+    <section anchor="mapping-rule-parameters" title="Algorithmic mapping">
 
       <section anchor="mapping-rules" title="Mapping Rules">
         <section anchor="mapping-prefix" title="From a CE IPv6 Prefix to a CE 4rd Prefix">
@@ -325,31 +302,31 @@
             <artwork align="center"><![CDATA[
 <---------------- CE IPv6 prefix (max 128) -------------->
 +-------------------------------+------------------------+
-|      Domain IPv6 prefix       |        EA bits         |
+|      Domain IPv6 prefix       |        EA-bits         |
 +-------------------------------+------------------------+
-<-- Domain IPv6 Prefix length ->:<--  EA bit length  --->:
+<-- Domain IPv6 Prefix length ->:<--  EA-bit length  --->:
                                 :                        :
                                 :         ||             :
                                 :         \/             :
                                 :                        :
-                                :<--  EA bit length  --->:
+                                :<--  EA-bit length  --->:
             +-------------------+------------------------+
-            | Domain 4rd prefix |        EA bits         |
+            | Domain 4rd prefix |        EA-bits         |
             +-------------------+------------------------+
             <----------- CE 4rd prefix (max 47) --------->
             ]]></artwork>
 
           </figure>
 
-          <t>A CE derives its CE 4rd prefix from the IPv6 prefix it has been
-          delegated on the IPv6 network, using for this parameters of the
-          applicable mapping rule. If the domain has several mapping rules,
-          that which applies is that whose Domain IPv6 prefix is at the
-          beginning of the CE IPv6 prefix. As shown in Figure 1, the CE 4rd
-          prefix is made of the Domain 4rd prefix followed by the IPv4 EA bits,
-          where the IPv4 EA bits is the remainder of the CE IPv6 prefix after the
-          Domain IPv6 prefix (the length of the Domain IPv6 prefix is defined
-          by the mapping rule).</t>
+          <t>A CE derives its CE 4rd prefix from the CE IPv6 prefix,
+          using parameters of the applicable mapping rule. If the
+          domain has several mapping rules, the rule that applies is
+          that whose Domain IPv6 prefix has the longest match with the
+          CE IPv6 prefix. As shown in Figure 1, the CE 4rd prefix is
+          created by concatenating the Domain 4rd prefix with the IPv4
+          EA-bits, where the IPv4 EA-bits is the remainder of the CE
+          IPv6 prefix after the Domain IPv6 prefix (the length of the
+          Domain IPv6 prefix is defined by the mapping rule).</t>
 
         </section>
 
@@ -399,16 +376,14 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	  ***
 	  -->
 
-	  <t>Each value of a Port-set ID specifies which ports can be used by any
-          protocol whose header format starts with source and destination ports
-          (UDP, TCP, SCTP, etc.). Design constraint of the algorithm are the
-          following:</t>
+	  <t>The value of a Port-set ID specifies which ports can be
+	  used by a transport layer protocol (UDP, TCP, SCTP
+	  etc). Design constraint of the algorithm are the
+	  following:</t>
 
           <t><list hangIndent="22" style="hanging">
 	    <t hangText="Fairness with respect to special-value ports:">
-	    No port-set must contain any port from 0 to 4095. (These ports,
-            which have more value than others in OS's, are normally not used
-            in dynamic port assignments to applications).</t>
+	    No port-set must contain any well-known ports [IANA reference].</t>
 
 	    <t hangText="Fairness with respect to the number of ports">
 	    For a Port-set-ID's having the same length, all sets must have
@@ -416,8 +391,8 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 
 	    <t hangText="Exhaustiveness">
 	    For any Port-set-ID length, the aggregate of port sets
-            assigned for all values must include all ordinary-value ports
-            (from 4,096 to 65,535).</t>
+	    assigned for all values must include all ordinary-value
+	    ports.</t>
 	  </list></t>
 
 	  <t>If the Port-set ID has 1 to 12 bits, the set comprises 4 port ranges.
@@ -459,17 +434,6 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
    	  the port range having head 1 is assigned. (In these three cases, the
    	  smallest port range has only one element).</t>
 
-	  <t>NOTE: The port set assigned to a CE may be further subdivided by the
-   	  CE among several functions such as the following: (1) an IPv4 NAPT
-   	  (possibly configurable to do port forwarding, and possibly doing
-   	  dynamic port assignments to hosts with UPnP and/or NAT-PMP); (2) an
-   	  API for applications in the CE that need dynamic port assignments;
-   	  (3) a new 4rd BR which assigns to its CE's subsets of its own port
-	  set.  How to chose among these functions and/or combine them is
-	  beyond the scope of this specification.  Readers are referred to
-    	  documents dealing with operational applicability in diverse
-   	  environments, e.g. [draft-sun-intarea-4rd-applicability] prepared in
-   	  parallel of this one.</t>
 	</section>
 
 	<section anchor="address-mapping" title="From an IPv4 Address or IPv4 Address + Port to a CE IPv6 Address">
@@ -484,14 +448,14 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
    |IPv4 shared address| '  |
    +---------------+---+----+
                    <-------->
-                  EA bit length
+                  EA-bit length
                    :        :
                    :   ||   :
                    :   ||   :
                    :   \/   : Domain IPv6 suffix
                    :        :  |
 +------------------+--------+--|-+----------------------------------+
-|Domain IPv6 prefix| EA bits|  ' |                  0               |
+|Domain IPv6 prefix| EA-bits|  ' |                  0               |
 +------------------+--------+----+----------------------------------+
 <------------ max 64 ------------>
 <---------------------- CE IPv6 address (128) --------------------->
@@ -525,6 +489,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	  <xref target="address-mapping-fig"></xref>
           illustrates this process in the case of a shared IPv4 address.</t>
 	</section>
+      </section>
       </section>
 
       <section anchor="fragmentation" title="Encapsulation and Fragmentation Consideration">
@@ -787,8 +752,6 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	</section>
 
       </section>
-    </section>
-
 
     <section anchor="security" title="Security Considerations">
       <t><list hangIndent="22" style="hanging">
@@ -812,9 +775,8 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	automatic-tunneling scenarios are documented in <xref
 	target="I-D.ietf-v6ops-tunnel-loops"></xref>.  They cannot
 	exist with 4rd because each BRs checks that the IPv6 source
-	address of a received IPv6 packet is a CE address (<xref
-	target="one-mapping-rule-behavior"></xref> (b) and <!-- <xref -->
-	<!-- target="multiple-mapping-rule-behavior"></xref> --> (b)).</t>
+	address of a received IPv6 packet is a CE address <xref
+	target="mapping-rules"></xref>.</t>
 
 	<t hangText="Attacks facilitated by restricted port sets">
 	From hosts that are not subject to ingress filtering of
@@ -880,7 +842,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
     <!-- Change Log
 
 v00 2011-04-08  TM	Initial version
-v02 2011-06-14  OT	Revised version from Berlin discussion
+v01 2011-06-23  OT	Revised version from Berlin discussion
 
 -->
   </back>
