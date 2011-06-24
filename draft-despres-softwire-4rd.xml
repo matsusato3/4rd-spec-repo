@@ -741,58 +741,58 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 <!--    	  At time of writing, whether this test can remain a MAY, or might -->
 <!--    	  require a SHOULD or a MUST remains an open question.</t> -->
 <!-- 	</section> -->
-      </section>
+    </section>
 
-      <section title="NAT considerations">
-        <t>The port-restricted NAT44 must be implemented in 4rd CE. 4rd
-        CE must implement the behavior conforming to the best current
-	practice documented in <xref target="RFC4787"></xref>,
-	<xref target="RFC5508"></xref> and <xref target="RFC5382"></xref>. 
-	The available port number in NAT44 in a given 4rd CE should be
-	restricted in the port-range described in
-	<xref target="port-set"></xref>.</t>
-      </section>
+    <section title="NAT considerations">
+      <t>The port-restricted NAT44 must be implemented in 4rd CE. 4rd
+      CE must implement the behavior conforming to the best current
+      practice documented in <xref target="RFC4787"></xref>,
+      <xref target="RFC5508"></xref> and <xref target="RFC5382"></xref>. 
+      The available port number in NAT44 in a given 4rd CE should be
+      restricted in the port-range described in
+      <xref target="port-set"></xref>.</t>
+    </section>
 
-      <section title="ICMP">
-	<!-- *** NEW -->
-	<!-- CE on sending will have to set ICMP identifier field on -->
-	<!-- outgoing. -->
-	<!-- Section 8 of 2473 for incoming ICMP errors on BR. -->
-	<!-- Reference RFC5508??? -->
-	<t>ICMP message should be supported in 4rd domain. Hence, the
-	NAT44 in 4rd CE must implement the behavior for ICMP message
-	conforming to the best current practice documented in
-	<xref target="RFC5508"></xref>.</t>
+    <section title="ICMP">
+      <!-- *** NEW -->
+      <!-- CE on sending will have to set ICMP identifier field on -->
+      <!-- outgoing. -->
+      <!-- Section 8 of 2473 for incoming ICMP errors on BR. -->
+      <!-- Reference RFC5508??? -->
+      <t>ICMP message should be supported in 4rd domain. Hence, the
+      NAT44 in 4rd CE must implement the behavior for ICMP message
+      conforming to the best current practice documented in
+      <xref target="RFC5508"></xref>.</t>
 
-	<t> If a 4rd CE receives an ICMP message having ICMP identifier
-	field in ICMP header, NAT44 in the 4rd CE must rewrite this
-	field to a specific value assigned from the port-range described
-	in <xref target="port-set"></xref>. BR and other CEs must handle
-	this field similar to the port number in tcp/udp header upon
-	receiving the ICMP message with ICMP identifier field.</t>
+      <t> If a 4rd CE receives an ICMP message having ICMP identifier
+      field in ICMP header, NAT44 in the 4rd CE must rewrite this
+      field to a specific value assigned from the port-range described
+      in <xref target="port-set"></xref>. BR and other CEs must handle
+      this field similar to the port number in tcp/udp header upon
+      receiving the ICMP message with ICMP identifier field.</t>
 
-	<t>If a 4rd BR and CE receives an ICMP error message without
-	ICMP identifier field for some errors that is detected inside
-        a IPv6 tunnel, a 4rd BR and CE should replay the ICMP error
-        message to the original source. This behavior should be
-	implemented conforming to the section 8 of
-	<xref target="RFC2473"></xref>. The 4rd BR and CE obtain the
-	origianl IPv6 tunnel packet storing in ICMP payload and then
-        decapsulate IPv4 packet. Finally the 4rd BR and CE generate
-        a new ICMP error message from the decapsulated IPv4 packet
-        and then forward it.</t>
+      <t>If a 4rd BR and CE receives an ICMP error message without
+      ICMP identifier field for some errors that is detected inside
+      a IPv6 tunnel, a 4rd BR and CE should replay the ICMP error
+      message to the original source. This behavior should be
+      implemented conforming to the section 8 of
+      <xref target="RFC2473"></xref>. The 4rd BR and CE obtain the
+      origianl IPv6 tunnel packet storing in ICMP payload and then
+      decapsulate IPv4 packet. Finally the 4rd BR and CE generate
+      a new ICMP error message from the decapsulated IPv4 packet
+      and then forward it.</t>
 
-	<t>If a 4rd BR receives an ICMP error message on its IPv4 interface,
-        the 4rd BR should replay the ICMP message to an appropriate 4rd
-        CE. If IPv4 address is not shared, the 4rd BR generates a CE IPv6
-	address from the IPv4 destination address in the ICMP error message
-        and encapsulates the ICMP message in IPv6. If IPv4 address is shared,
-	the 4rd BR derives an original IPv4 packet from the ICMP payload and
-	generates a CE IPv6 address from the source address and the source
-	port in the original IPv4 packet. If the 4rd BR can generate the CE
-	IPv6 address, the 4rd BR encapsulates the ICMP error message in IPv6
-	and then forward it to its IPv6 interface.</t>
-      </section>
+      <t>If a 4rd BR receives an ICMP error message on its IPv4 interface,
+      the 4rd BR should replay the ICMP message to an appropriate 4rd
+      CE. If IPv4 address is not shared, the 4rd BR generates a CE IPv6
+      address from the IPv4 destination address in the ICMP error message
+      and encapsulates the ICMP message in IPv6. If IPv4 address is shared,
+      the 4rd BR derives an original IPv4 packet from the ICMP payload and
+      generates a CE IPv6 address from the source address and the source
+      port in the original IPv4 packet. If the 4rd BR can generate the CE
+      IPv6 address, the 4rd BR encapsulates the ICMP error message in IPv6
+      and then forward it to its IPv6 interface.</t>
+    </section>
 
     <section anchor="security" title="Security Considerations">
       <t><list hangIndent="22" style="hanging">
