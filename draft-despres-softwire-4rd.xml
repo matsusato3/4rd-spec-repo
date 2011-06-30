@@ -40,6 +40,33 @@
     <title abbrev="IPv4 Residual Deployment">IPv4 Residual Deployment
     on IPv6 infrastructure - protocol specification</title>
 
+
+   <author fullname="Tetsuya Murakami" initials="T." surname="Murakami">
+      <organization>IP Infusion</organization>
+      <address>
+	    <postal>
+          <street>1188 East Arques Avenue</street>
+	      <city>Sunnyvale</city>
+	      <country>USA</country>
+	    </postal>
+	    <email>tetsuya@ipinfusion.com</email>
+      </address>
+    </author>
+
+ 
+    <author fullname="Ole Troan" initials="O." surname="Troan">
+      <organization>cisco</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city>Oslo</city>
+          <country>Norway</country>
+        </postal>
+        <email>ot@cisco.com</email>
+      </address>
+    </author>
+
+	<!---
     <author fullname="Remi Despres" initials="R." surname="Despres">
       <organization>RD-IPtech</organization>
       <address>
@@ -49,18 +76,6 @@
           <country>France</country>
         </postal>
         <email>remi.despres@free.fr</email>
-      </address>
-    </author>
-
-    <author fullname="Tetsuya Murakami" initials="T." surname="Murakami">
-      <organization>IP Infusion</organization>
-      <address>
-	    <postal>
-          <street>1188 East Arques Avenue</street>
-	      <city>Sunnyvale</city>
-	      <country>USA</country>
-	    </postal>
-	    <email>tetsuya@ipinfusion.com</email>
       </address>
     </author>
 
@@ -75,18 +90,8 @@
 	    <email>satoru.matsushima@tm.softbank.co.jp</email>
       </address>
     </author>
-
-    <author fullname="Ole Troan" initials="O." surname="Troan">
-      <organization>cisco</organization>
-      <address>
-        <postal>
-          <street></street>
-          <city>Oslo</city>
-          <country>Norway</country>
-        </postal>
-        <email>ot@cisco.com</email>
-      </address>
-    </author>
+    
+    --->
 
     <date month="June" year="2011" />
 
@@ -846,13 +851,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
       independently proposed a similar approach with the same acronym
       deserves special recognition.</t>
     </section>
-
-
-    <section title="TODO">
-      <t>CE NATs</t>
-      <!-- * the CE NAT must use port ranges assigned -->
-      <!-- * note stating that the CE NAT must reuse the port range per destination -->
-    </section>
+    
   </middle>
 
   <!--  *****BACK MATTER ***** -->

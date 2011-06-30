@@ -1,15 +1,11 @@
 
 
 
-Internet Engineering Task Force                               R. Despres
-Internet-Draft                                                 RD-IPtech
-Intended status: Standards Track                             T. Murakami
-Expires: December 25, 2011                                   IP Infusion
-                                                           S. Matsushima
-                                                                SoftBank
-                                                                O. Troan
-                                                                   cisco
-                                                           June 23, 2011
+Internet Engineering Task Force                              T. Murakami
+Internet-Draft                                               IP Infusion
+Intended status: Standards Track                                O. Troan
+Expires: January 1, 2012                                           cisco
+                                                           June 30, 2011
 
 
 IPv4 Residual Deployment on IPv6 infrastructure - protocol specification
@@ -38,7 +34,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on December 25, 2011.
+   This Internet-Draft will expire on January 1, 2012.
 
 Copyright Notice
 
@@ -49,18 +45,18 @@ Copyright Notice
    Provisions Relating to IETF Documents
    (http://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
-
-
-
-Despres, et al.         Expires December 25, 2011               [Page 1]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
    carefully, as they describe your rights and restrictions with respect
    to this document.  Code Components extracted from this document must
    include Simplified BSD License text as described in Section 4.e of
    the Trust Legal Provisions and are provided without warranty as
+
+
+
+Murakami & Troan         Expires January 1, 2012                [Page 1]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
+
    described in the Simplified BSD License.
 
 
@@ -85,10 +81,9 @@ Table of Contents
    10. Security Considerations  . . . . . . . . . . . . . . . . . . . 15
    11. IANA Consideration . . . . . . . . . . . . . . . . . . . . . . 16
    12. Acknowledgements . . . . . . . . . . . . . . . . . . . . . . . 16
-   13. TODO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
-   14. References . . . . . . . . . . . . . . . . . . . . . . . . . . 17
-     14.1. Normative References . . . . . . . . . . . . . . . . . . . 17
-     14.2. Informative References . . . . . . . . . . . . . . . . . . 17
+   13. References . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+     13.1. Normative References . . . . . . . . . . . . . . . . . . . 16
+     13.2. Informative References . . . . . . . . . . . . . . . . . . 17
    Authors' Addresses . . . . . . . . . . . . . . . . . . . . . . . . 18
 
 
@@ -108,7 +103,12 @@ Table of Contents
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 2]
+
+
+
+
+
+Murakami & Troan         Expires January 1, 2012                [Page 2]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -164,7 +164,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 3]
+Murakami & Troan         Expires January 1, 2012                [Page 3]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -220,7 +220,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 4]
+Murakami & Troan         Expires January 1, 2012                [Page 4]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -276,7 +276,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 5]
+Murakami & Troan         Expires January 1, 2012                [Page 5]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -332,7 +332,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 6]
+Murakami & Troan         Expires January 1, 2012                [Page 6]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -388,7 +388,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 7]
+Murakami & Troan         Expires January 1, 2012                [Page 7]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -444,7 +444,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 8]
+Murakami & Troan         Expires January 1, 2012                [Page 8]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -500,7 +500,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011               [Page 9]
+Murakami & Troan         Expires January 1, 2012                [Page 9]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -556,7 +556,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 10]
+Murakami & Troan         Expires January 1, 2012               [Page 10]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -612,7 +612,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 11]
+Murakami & Troan         Expires January 1, 2012               [Page 11]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -668,7 +668,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 12]
+Murakami & Troan         Expires January 1, 2012               [Page 12]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -724,7 +724,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 13]
+Murakami & Troan         Expires January 1, 2012               [Page 13]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -780,7 +780,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 14]
+Murakami & Troan         Expires January 1, 2012               [Page 14]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -836,7 +836,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 15]
+Murakami & Troan         Expires January 1, 2012               [Page 15]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
@@ -883,24 +883,19 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    deserves special recognition.
 
 
-13.  TODO
+13.  References
 
-   CE NATs
-
-
-14.  References
-
-
-
-Despres, et al.         Expires December 25, 2011              [Page 16]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
-14.1.  Normative References
+13.1.  Normative References
 
    [RFC0791]  Postel, J., "Internet Protocol", STD 5, RFC 791,
               September 1981.
+
+
+
+Murakami & Troan         Expires January 1, 2012               [Page 16]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
@@ -919,7 +914,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    [RFC4291]  Hinden, R. and S. Deering, "IP Version 6 Addressing
               Architecture", RFC 4291, February 2006.
 
-14.2.  Informative References
+13.2.  Informative References
 
    [I-D.despres-softwire-sam]
               Despres, R., "Stateless Address Mapping (SAM) - a
@@ -946,17 +941,18 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
               draft-operators-softwire-stateless-4v6-motivation-02 (work
               in progress), June 2011.
 
-
-
-Despres, et al.         Expires December 25, 2011              [Page 17]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
    [RFC2473]  Conta, A. and S. Deering, "Generic Packet Tunneling in
               IPv6 Specification", RFC 2473, December 1998.
 
    [RFC2827]  Ferguson, P. and D. Senie, "Network Ingress Filtering:
+
+
+
+Murakami & Troan         Expires January 1, 2012               [Page 17]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
+
+
               Defeating Denial of Service Attacks which employ IP Source
               Address Spoofing", BCP 38, RFC 2827, May 2000.
 
@@ -992,33 +988,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
               January 2011.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-Despres, et al.         Expires December 25, 2011              [Page 18]
-
-Internet-Draft          IPv4 Residual Deployment               June 2011
-
-
 Authors' Addresses
-
-   Remi Despres
-   RD-IPtech
-   3 rue du President Wilson
-   Levallois
-   France
-
-   Email: remi.despres@free.fr
-
 
    Tetsuya Murakami
    IP Infusion
@@ -1029,13 +999,14 @@ Authors' Addresses
    Email: tetsuya@ipinfusion.com
 
 
-   Satoru Matsushima
-   SoftBank
-   1-9-1 Higashi-Shinbashi, Munato-ku
-   Tokyo
-   Japan
 
-   Email: satoru.matsushima@tm.softbank.co.jp
+
+
+
+
+Murakami & Troan         Expires January 1, 2012               [Page 18]
+
+Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
    Ole Troan
@@ -1060,5 +1031,34 @@ Authors' Addresses
 
 
 
-Despres, et al.         Expires December 25, 2011              [Page 19]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Murakami & Troan         Expires January 1, 2012               [Page 19]
 
