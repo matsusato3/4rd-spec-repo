@@ -9,7 +9,7 @@ Expires: January 1, 2012                                           cisco
 
 
 IPv4 Residual Deployment on IPv6 infrastructure - protocol specification
-                     draft-despres-softwire-4rd-01
+                       draft-xxxx-softwire-4rd-00
 
 Abstract
 
@@ -563,31 +563,32 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 6.  Encapsulation and Fragmentation Consideration
 
-   Maximum transmission unit (MTU) and fragmentation issues for IPv6 in
-   IPv4 tunneling are discussed in detail in Section 3.2 of RFC 4213
-   [RFC4213]. 6rd's scope is limited to a service provider network.
-   IPv4 Path MTU discovery MAY be used to adjust the MTU of the tunnel
-   as described in Section 3.2.2 of RFC 4213 [RFC4213], or the 6rd
-   Tunnel MTU might be explicitly configured.
+   Maximum transmission unit (MTU) and fragmentation issues for IPv4 in
+   IPv6 tunneling are discussed in detail in Section 7.2 of [RFC2473].
+   4rd's scope is limited to a service provider network.  IPv6 Path MTU
+   discovery MAY be used to adjust the MTU of the tunnel as described in
+   Section 7.2 of [RFC2473], or the 4rd Tunnel MTU might be explicitly
+   configured.
 
    The use of an anycast source address could lead to any ICMP error
    message generated on the path being sent to a different BR.
-   Therefore, using dynamic tunnel MTU Section 3.2.2 of [RFC4213] is
-   subject to IPv4 Path MTU blackholes.
+   Therefore, using dynamic tunnel MTU Section 7.2 of [RFC2473] is
+   subject to IPv6 Path MTU blackholes.
 
    Multiple BRs using the same anycast source address could send
-   fragmented packets to the same IPv6 CE at the same time.  If the
+   fragmented packets to the same 4rd CE at the same time.  If the
    fragmented packets from different BRs happen to use the same fragment
    ID, incorrect reassembly might occur.  For this reason, a BR using an
-   anycast source address MUST set the IPv4 Don't Fragment flag.
+   anycast source address MUST NOT fragment the IPv6 encapsulated
+   packet.
 
-   If the MTU is well-managed such that the IPv4 MTU on the CE WAN side
+   If the MTU is well-managed such that the IPv6 MTU on the CE WAN side
    interface is set so that no fragmentation occurs within the boundary
-   of the SP, then the 6rd Tunnel MTU should be set to the known IPv4
-   MTU minus the size of the encapsulating IPv4 header (20 bytes).  For
-   example, if the IPv4 MTU is known to be 1500 bytes, the 6rd Tunnel
-   MTU might be set to 1480 bytes.  Absent more specific information,
-   the 6rd Tunnel MTU SHOULD default to 1280 bytes.
+   of the SP, then the 4rd Tunnel MTU should be set to the known IPv6
+   MTU minus the size of the encapsulating IPv6 header (40 bytes).  For
+   example, if the IPv6 MTU is known to be 1500 bytes, the 4rd Tunnel
+   MTU might be set to 1460 bytes.  Absent more specific information,
+   the 4rd Tunnel MTU SHOULD default to 1280 bytes.
 
    For 4rd domain traversal, IPv4 packets are encapsulated in IPv6
    packets whose Next header is set to 4 (i.e.  IPv4).  If fragmentation
@@ -608,7 +609,6 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    reassembling each datagram received in multiple packets, and to treat
    it as though it would have been received in single packet.  This
    function is such that 4rd is in this case stateful at the IP layer.
-   (This is common with DS-lite and NAT64/DNS64 which, in addition, are
 
 
 
@@ -617,6 +617,7 @@ Murakami & Troan         Expires January 1, 2012               [Page 11]
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
+   (This is common with DS-lite and NAT64/DNS64 which, in addition, are
    stateful at the transport layer.)  At Domain entrance, this ensures
    that all pieces of all received IPv4 datagrams go to the right IPv6
    destinations.
@@ -664,7 +665,6 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
                          interface.  If the length of the IPv6
                          encapsulated packet exceeds the MTU of the IPv6
                          interface, the fragmentation should be done in
-                         IPv6.
 
 
 
@@ -672,6 +672,8 @@ Murakami & Troan         Expires January 1, 2012               [Page 12]
 
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
+
+                         IPv6.
 
    (b) BR reception of an IPv6 packet
 
@@ -719,8 +721,6 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
                          successfully, CE encapsulates the IPv4 packet
                          in IPv6 whose destination address is set to the
                          derived IPv6 address.  If the mapping rule is
-                         not found in step 1, CE encapsulates the IPv4
-                         packet in IPv6 whose destination address is set
 
 
 
@@ -729,6 +729,8 @@ Murakami & Troan         Expires January 1, 2012               [Page 13]
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
+                         not found in step 1, CE encapsulates the IPv4
+                         packet in IPv6 whose destination address is set
                          to BR IPv6 address.  Then CE forwards the IPv6
                          packet via IPv6 interface.  If the length of
                          the IPv6 packet exceeds the MTU of the IPv6
@@ -772,9 +774,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    implement the behavior conforming to the best current practice
    documented in [RFC4787], [RFC5508] and [RFC5382].  The available port
    number in NAT44 in a given 4rd CE should be restricted in the port-
-   range described in Section 5.1.3.
-
-
+   set described in Section 5.1.3.
 
 
 
@@ -793,10 +793,10 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
    If a 4rd CE receives an ICMP message having ICMP identifier field in
    ICMP header, NAT44 in the 4rd CE must rewrite this field to a
-   specific value assigned from the port-range described in
-   Section 5.1.3.  BR and other CEs must handle this field similar to
-   the port number in tcp/udp header upon receiving the ICMP message
-   with ICMP identifier field.
+   specific value assigned from the port-set described in Section 5.1.3.
+   BR and other CEs must handle this field similar to the port number in
+   tcp/udp header upon receiving the ICMP message with ICMP identifier
+   field.
 
    If a 4rd BR and CE receives an ICMP error message without ICMP
    identifier field for some errors that is detected inside a IPv6
