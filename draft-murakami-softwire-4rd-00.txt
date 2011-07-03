@@ -821,13 +821,13 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 10.  Security Considerations
 
-   Spoofing attacks      With consistency checks between IPv4 and IPv6
+   Spoofing attacks:     With consistency checks between IPv4 and IPv6
                          sources that are performed on IPv4/IPv6 packets
                          received by BR's and CE's (Section 7), 4rd does
                          not introduce any opportunity for spoofing
                          attack that would not pre-exist in IPv6.
 
-   Denial-of-service attacks  In 4rd domains where IPv4 addresses are
+   Denial-of-service attacks:  In 4rd domains where IPv4 addresses are
                          shared, the fact that IPv4 datagram reassembly
                          may be necessary introduces an opportunity for
                          DOS attacks (Section 4.4).  This is inherent to
@@ -846,14 +846,14 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
                          both clients and servers so that, where 4rd is
                          supported, it is less and less used.
 
-   Routing-loop attacks  Routing-loop attacks that may exist in some
-                         automatic-tunneling scenarios are documented in
+   Routing-loop attacks: This attack may exist in some automatic-
+                         tunneling scenarios are documented in
                          [I-D.ietf-v6ops-tunnel-loops].  They cannot
                          exist with 4rd because each BRs checks that the
                          IPv6 source address of a received IPv6 packet
                          is a CE address Section 5.1.
 
-   Attacks facilitated by restricted port set  From hosts that are not
+   Attacks facilitated by restricted port set:  From hosts that are not
                          subject to ingress filtering of [RFC2827], some
                          attacks are possible by intervening with faked
                          packets during ongoing transport connections
