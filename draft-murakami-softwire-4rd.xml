@@ -750,13 +750,13 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
     </section>
 
     <section title="NAT considerations">
-      <t>The port-restricted NAT44 must be implemented in 4rd CE. 4rd
-      CE must implement the behavior conforming to the best current
-      practice documented in <xref target="RFC4787"></xref>,
-      <xref target="RFC5508"></xref> and <xref target="RFC5382"></xref>. 
-      The available port number in NAT44 in a given 4rd CE should be
-      restricted in the port-set described in
-      <xref target="port-set"></xref>.</t>
+	  <t>NAT44 should be implemented in CPE which has 4rd CE function. The
+	  NAT44 must conform that best current practice documented in <xref
+	  target="RFC4787"></xref>, <xref target="RFC5508"></xref> and <xref
+	  target="RFC5382"></xref>. When there are restricted available port
+	  numbers in a given 4rd CE described in <xref
+	  target="port-set"></xref>, the NAT44 must restrict mapping ports
+	  within the port-set.</t>
     </section>
 
     <section title="ICMP">
@@ -825,19 +825,17 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	address of a received IPv6 packet is a CE address <xref
 	target="mapping-rules"></xref>.</t>
 
-	<t hangText="Attacks facilitated by restricted port sets">
-	From hosts that are not subject to ingress filtering of
-	<xref target="RFC2827"></xref>, some attacks are possible by
-	intervening with faked packets during ongoing transport connections
-	(<xref target="RFC4953"></xref>, <xref target="RFC5961"></xref>,
-	<xref target="RFC6056"></xref>.
-        These attacks, that have mitigations of their own are easier with
-        hosts that only use restricted port sets (they depend on guessing
-        which ports are currently used by target hosts).  To avoid using
-        restricted port sets, the easiest approach consists in increasing
-        the proportion of connections that are IPv6, i.e. using
-        unrestricted port sets.</t>
-      </list></t>
+	<t hangText="Attacks facilitated by restricted port set">
+		From hosts that are not subject to ingress filtering of <xref
+		target="RFC2827"></xref>, some attacks are possible by intervening
+		with faked packets during ongoing transport connections (<xref
+		target="RFC4953"></xref>, <xref target="RFC5961"></xref>, <xref
+		target="RFC6056"></xref>. The attacks depend on guessing which
+		ports are currently used by target hosts. Using unrestricted port
+		set which mean that are IPv6 is exactly preferable. To avoid this
+		attacks using restricted port set, NAT44 filtering behavior must
+		be "Address-Dependent Filtering".</t>
+	</list></t>
     </section>
 
     <section anchor="iana" title="IANA Consideration">

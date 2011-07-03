@@ -770,11 +770,11 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
 
 8.  NAT considerations
 
-   The port-restricted NAT44 must be implemented in 4rd CE. 4rd CE must
-   implement the behavior conforming to the best current practice
-   documented in [RFC4787], [RFC5508] and [RFC5382].  The available port
-   number in NAT44 in a given 4rd CE should be restricted in the port-
-   set described in Section 5.1.3.
+   NAT44 should be implemented in CPE which has 4rd CE function.  The
+   NAT44 must conform that best current practice documented in
+   [RFC4787], [RFC5508] and [RFC5382].  When there are restricted
+   available port numbers in a given 4rd CE described in Section 5.1.3,
+   the NAT44 must restrict mapping ports within the port-set.
 
 
 
@@ -853,19 +853,17 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
                          IPv6 source address of a received IPv6 packet
                          is a CE address Section 5.1.
 
-   Attacks facilitated by restricted port sets  From hosts that are not
+   Attacks facilitated by restricted port set  From hosts that are not
                          subject to ingress filtering of [RFC2827], some
                          attacks are possible by intervening with faked
                          packets during ongoing transport connections
-                         ([RFC4953], [RFC5961], [RFC6056].  These
-                         attacks, that have mitigations of their own are
-                         easier with hosts that only use restricted port
-                         sets (they depend on guessing which ports are
-                         currently used by target hosts).  To avoid
-                         using restricted port sets, the easiest
-                         approach consists in increasing the proportion
-                         of connections that are IPv6, i.e. using
-                         unrestricted port sets.
+                         ([RFC4953], [RFC5961], [RFC6056].  The attacks
+                         depend on guessing which ports are currently
+                         used by target hosts.  Using unrestricted port
+                         set which mean that are IPv6 is exactly
+                         preferable.  To avoid this attacks using
+                         restricted port set, NAT44 filtering behavior
+                         must be "Address-Dependent Filtering".
 
 
 11.  IANA Consideration
@@ -890,6 +888,8 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
    [RFC0791]  Postel, J., "Internet Protocol", STD 5, RFC 791,
               September 1981.
 
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+
 
 
 Murakami & Troan        Expires December 3, 2011               [Page 16]
@@ -897,7 +897,6 @@ Murakami & Troan        Expires December 3, 2011               [Page 16]
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
    [RFC2460]  Deering, S. and R. Hinden, "Internet Protocol, Version 6
@@ -945,6 +944,7 @@ Internet-Draft          IPv4 Residual Deployment               June 2011
               IPv6 Specification", RFC 2473, December 1998.
 
    [RFC2827]  Ferguson, P. and D. Senie, "Network Ingress Filtering:
+              Defeating Denial of Service Attacks which employ IP Source
 
 
 
@@ -953,7 +953,6 @@ Murakami & Troan        Expires December 3, 2011               [Page 17]
 Internet-Draft          IPv4 Residual Deployment               June 2011
 
 
-              Defeating Denial of Service Attacks which employ IP Source
               Address Spoofing", BCP 38, RFC 2827, May 2000.
 
    [RFC3022]  Srisuresh, P. and K. Egevang, "Traditional IP Network
@@ -997,6 +996,7 @@ Authors' Addresses
    USA
 
    Email: tetsuya@ipinfusion.com
+
 
 
 
