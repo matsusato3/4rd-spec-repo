@@ -22,6 +22,7 @@
 <!ENTITY I-D.ietf-v6ops-tunnel-loops SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-v6ops-tunnel-loops.xml'>
 <!ENTITY I-D.ymbk-aplusp SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ymbk-aplusp'>
 <!ENTITY I-D.operators-softwire-stateless-4v6-motivation SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.operators-softwire-stateless-4v6-motivation'>
+<!ENTITY I-D.mrugalski-dhc-dhcpv6-4rd SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.mrugalski-dhc-dhcpv6-4rd'>
 
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -267,20 +268,19 @@
 
       <section title="Customer Edge Configuration">
 
-	<t>The 4rd configuration elements are set to values that are
-	the same across all CEs within a 4rd domain. The values may be
-	configured in a variety of manners, including provisioning
-	methods such as the Broadband Forum's "TR-69" [TR069]
-	Residential Gateway management interface, an XML-based object
-	retrieved after IPv6 connectivity is established, a DNS
-	record, an SMIv2 MIB [RFC2578], or manual configuration by an
-	administrator. A companion document [ref] describes how to
-	configure the necessary parameters via IPv6 DHCP. A CE that
-	allows IPv6 configuration by IPv6 DHCP SHOULD implement this
-	option. Other configuration and management methods may use the
-	format described by this option for consistency and
-	convenience of implementation on CEs that support multiple
-	configuration methods.</t>
+	<t>The 4rd configuration elements are set to values that are the
+	same across all CEs within a 4rd domain. The values may be
+	configured in a variety of manners, including provisioning methods
+	such as the Broadband Forum's "TR-69" [TR069] Residential Gateway
+	management interface, an XML-based object retrieved after IPv6
+	connectivity is established, a DNS record, an SMIv2 MIB [RFC2578],
+	or manual configuration by an administrator. A companion document 
+	<xref target='I-D.mrugalski-dhc-dhcpv6-4rd'></xref>describes how to
+	configure the necessary parameters via IPv6 DHCP. A CE that allows
+	IPv6 configuration by IPv6 DHCP SHOULD implement this option. Other
+	configuration and management methods may use the format described by
+	this option for consistency and convenience of implementation on CEs
+	that support multiple configuration methods.</t>
 
 	<t>The only remaining provisioning information the CE requires
 	in order to calculate the 4rd address and enable IPv6
@@ -843,12 +843,10 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
     </section>
 
     <section anchor="acknowledgements" title="Acknowledgements">
-      <t>The authors wish to thank Mark Townsley for his active encouragements
-      to pursue the 4rd approach since it was first introduced in
-      <xref target="I-D.despres-softwire-sam"></xref>. Questions raised by Wojciech
-      Dec have been useful to clarify explanations. Olivier Vautrin, who
-      independently proposed a similar approach with the same acronym
-      deserves special recognition.</t>
+      <t>This draft is based on original idea described in <xref
+      target="I-D.despres-softwire-sam"></xref>. The authors would like
+      to thank Remi Despres, Mark Townsley, Wojciech Dec, Olivier
+      Vautrin and Satoru Matsushima.</t>
     </section>
     
   </middle>
@@ -880,6 +878,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
       &RFC5969;
       &RFC6056;
       &I-D.operators-softwire-stateless-4v6-motivation;
+      &I-D.mrugalski-dhc-dhcpv6-4rd;
     </references>
 
     <!-- Change Log
