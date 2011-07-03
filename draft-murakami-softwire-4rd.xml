@@ -261,7 +261,7 @@
 
       <t>A mapping rule consist of the following elements: a Domain
       IPv6 prefix and prefix length, a Domain 4rd prefix and prefix
-      length, EA-bits length, and a Domain IPv6 suffix and length.
+      length, CE IPv6 Prefix length, and a Domain IPv6 suffix and length.
       See <xref target="mapping-rules">section</xref> for a detailed
       description of mapping rules.</t>
 
