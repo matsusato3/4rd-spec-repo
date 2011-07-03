@@ -22,6 +22,7 @@
 <!ENTITY I-D.ietf-v6ops-tunnel-loops SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-v6ops-tunnel-loops.xml'>
 <!ENTITY I-D.ymbk-aplusp SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ymbk-aplusp'>
 <!ENTITY I-D.operators-softwire-stateless-4v6-motivation SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.operators-softwire-stateless-4v6-motivation'>
+<!ENTITY I-D.mrugalski-dhc-dhcpv6-4rd SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.mrugalski-dhc-dhcpv6-4rd'>
 
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -267,20 +268,19 @@
 
       <section title="Customer Edge Configuration">
 
-	<t>The 4rd configuration elements are set to values that are
-	the same across all CEs within a 4rd domain. The values may be
-	configured in a variety of manners, including provisioning
-	methods such as the Broadband Forum's "TR-69" [TR069]
-	Residential Gateway management interface, an XML-based object
-	retrieved after IPv6 connectivity is established, a DNS
-	record, an SMIv2 MIB [RFC2578], or manual configuration by an
-	administrator. A companion document [ref] describes how to
-	configure the necessary parameters via IPv6 DHCP. A CE that
-	allows IPv6 configuration by IPv6 DHCP SHOULD implement this
-	option. Other configuration and management methods may use the
-	format described by this option for consistency and
-	convenience of implementation on CEs that support multiple
-	configuration methods.</t>
+	<t>The 4rd configuration elements are set to values that are the
+	same across all CEs within a 4rd domain. The values may be
+	configured in a variety of manners, including provisioning methods
+	such as the Broadband Forum's "TR-69" [TR069] Residential Gateway
+	management interface, an XML-based object retrieved after IPv6
+	connectivity is established, a DNS record, an SMIv2 MIB [RFC2578],
+	or manual configuration by an administrator. A companion document 
+	<xref target='I-D.mrugalski-dhc-dhcpv6-4rd'></xref>describes how to
+	configure the necessary parameters via IPv6 DHCP. A CE that allows
+	IPv6 configuration by IPv6 DHCP SHOULD implement this option. Other
+	configuration and management methods may use the format described by
+	this option for consistency and convenience of implementation on CEs
+	that support multiple configuration methods.</t>
 
 	<t>The only remaining provisioning information the CE requires
 	in order to calculate the 4rd address and enable IPv6
@@ -750,13 +750,13 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
     </section>
 
     <section title="NAT considerations">
-      <t>The port-restricted NAT44 must be implemented in 4rd CE. 4rd
-      CE must implement the behavior conforming to the best current
-      practice documented in <xref target="RFC4787"></xref>,
-      <xref target="RFC5508"></xref> and <xref target="RFC5382"></xref>. 
-      The available port number in NAT44 in a given 4rd CE should be
-      restricted in the port-set described in
-      <xref target="port-set"></xref>.</t>
+	  <t>NAT44 should be implemented in CPE which has 4rd CE function. The
+	  NAT44 must conform that best current practice documented in <xref
+	  target="RFC4787"></xref>, <xref target="RFC5508"></xref> and <xref
+	  target="RFC5382"></xref>. When there are restricted available port
+	  numbers in a given 4rd CE described in <xref
+	  target="port-set"></xref>, the NAT44 must restrict mapping ports
+	  within the port-set.</t>
     </section>
 
     <section title="ICMP">
@@ -802,42 +802,42 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 
     <section anchor="security" title="Security Considerations">
       <t><list hangIndent="22" style="hanging">
-	<t hangText="Spoofing attacks">
-	With consistency checks between IPv4 and IPv6 sources that are
-        performed on IPv4/IPv6 packets received by BR's and CE's
-        (<xref target="behavior"></xref>), 4rd does not introduce any
-	opportunity for spoofing attack that would not pre-exist in IPv6.</t>
+	<t hangText="Spoofing attacks:">
+		With consistency checks between IPv4 and IPv6 sources that are
+		performed on IPv4/IPv6 packets received by BR's and CE's (<xref
+		target="behavior"></xref>), 4rd does not introduce any
+		opportunity for spoofing attack that would not pre-exist in
+		IPv6.</t>
 
-	<t hangText="Denial-of-service attacks">
-	In 4rd domains where IPv4 addresses are shared, the fact that IPv4
-        datagram reassembly may be necessary introduces an opportunity for
-        DOS attacks (Section 4.4).  This is inherent to address sharing,
-        and is common with other address sharing approaches such as DS-
-        lite and NAT64/DNS64. The best protection against such attacks is
-	to accelerate IPv6 enablement in both clients and servers so that,
-	where 4rd is supported, it is less and less used.</t>
+	<t hangText="Denial-of-service attacks:">
+		In 4rd domains where IPv4 addresses are shared, the fact that
+		IPv4 datagram reassembly may be necessary introduces an
+		opportunity for DOS attacks (Section 4.4).  This is inherent to
+		address sharing, and is common with other address sharing
+		approaches such as DS- lite and NAT64/DNS64. The best protection
+		against such attacks is to accelerate IPv6 enablement in both
+		clients and servers so that, where 4rd is supported, it is less
+		and less used.</t>
 
-	<t hangText="Routing-loop attacks">
-	Routing-loop attacks that may exist in some
-	automatic-tunneling scenarios are documented in <xref
-	target="I-D.ietf-v6ops-tunnel-loops"></xref>.  They cannot
-	exist with 4rd because each BRs checks that the IPv6 source
-	address of a received IPv6 packet is a CE address <xref
-	target="mapping-rules"></xref>.</t>
+	<t hangText="Routing-loop attacks:">
+		This attack may exist in some automatic-tunneling scenarios
+		are documented in <xref
+		target="I-D.ietf-v6ops-tunnel-loops"></xref>. They cannot exist
+		with 4rd because each BRs checks that the IPv6 source address of
+		a received IPv6 packet is a CE address <xref
+		target="mapping-rules"></xref>.</t>
 
-	<t hangText="Attacks facilitated by restricted port sets">
-	From hosts that are not subject to ingress filtering of
-	<xref target="RFC2827"></xref>, some attacks are possible by
-	intervening with faked packets during ongoing transport connections
-	(<xref target="RFC4953"></xref>, <xref target="RFC5961"></xref>,
-	<xref target="RFC6056"></xref>.
-        These attacks, that have mitigations of their own are easier with
-        hosts that only use restricted port sets (they depend on guessing
-        which ports are currently used by target hosts).  To avoid using
-        restricted port sets, the easiest approach consists in increasing
-        the proportion of connections that are IPv6, i.e. using
-        unrestricted port sets.</t>
-      </list></t>
+	<t hangText="Attacks facilitated by restricted port set:">
+		From hosts that are not subject to ingress filtering of <xref
+		target="RFC2827"></xref>, some attacks are possible by intervening
+		with faked packets during ongoing transport connections (<xref
+		target="RFC4953"></xref>, <xref target="RFC5961"></xref>, <xref
+		target="RFC6056"></xref>. The attacks depend on guessing which
+		ports are currently used by target hosts. Using unrestricted port
+		set which mean that are IPv6 is exactly preferable. To avoid this
+		attacks using restricted port set, NAT44 filtering behavior must
+		be "Address-Dependent Filtering".</t>
+	</list></t>
     </section>
 
     <section anchor="iana" title="IANA Consideration">
@@ -845,12 +845,10 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
     </section>
 
     <section anchor="acknowledgements" title="Acknowledgements">
-      <t>The authors wish to thank Mark Townsley for his active encouragements
-      to pursue the 4rd approach since it was first introduced in
-      <xref target="I-D.despres-softwire-sam"></xref>. Questions raised by Wojciech
-      Dec have been useful to clarify explanations. Olivier Vautrin, who
-      independently proposed a similar approach with the same acronym
-      deserves special recognition.</t>
+      <t>This draft is based on original idea described in <xref
+      target="I-D.despres-softwire-sam"></xref>. The authors would like
+      to thank Remi Despres, Mark Townsley, Wojciech Dec, Olivier
+      Vautrin and Satoru Matsushima.</t>
     </section>
     
   </middle>
@@ -882,6 +880,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
       &RFC5969;
       &RFC6056;
       &I-D.operators-softwire-stateless-4v6-motivation;
+      &I-D.mrugalski-dhc-dhcpv6-4rd;
     </references>
 
     <!-- Change Log
