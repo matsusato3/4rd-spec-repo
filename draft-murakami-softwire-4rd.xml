@@ -67,7 +67,7 @@
       </address>
     </author>
 
-	<!---
+    <!--
     <author fullname="Remi Despres" initials="R." surname="Despres">
       <organization>RD-IPtech</organization>
       <address>
@@ -91,10 +91,9 @@
 	    <email>satoru.matsushima@tm.softbank.co.jp</email>
       </address>
     </author>
-    
-    --->
+    -->
 
-    <date month="June" year="2011" />
+    <date month="July" year="2011" />
 
     <area>Internet</area>
     <workgroup>Internet Engineering Task Force</workgroup>
