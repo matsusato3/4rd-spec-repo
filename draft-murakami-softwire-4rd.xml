@@ -33,7 +33,7 @@
 <?rfc sortrefs="yes" ?>
 <?rfc compact="yes" ?>
 <?rfc subcompact="no" ?>
-<rfc category="std" docName="draft-murakami-softwire-4rd-00"
+<rfc category="std" docName="draft-murakami-softwire-4rd-01"
      ipr="trust200902">
   <!-- ***** FRONT MATTER ***** -->
 
@@ -79,6 +79,7 @@
         <email>remi.despres@free.fr</email>
       </address>
     </author>
+    -->
 
     <author fullname="Satoru Matsushima" initials="S." surname="Matsushima">
       <organization>SoftBank</organization>
@@ -91,7 +92,6 @@
 	    <email>satoru.matsushima@tm.softbank.co.jp</email>
       </address>
     </author>
-    -->
 
     <date month="July" year="2011" />
 
@@ -846,8 +846,8 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
     <section anchor="acknowledgements" title="Acknowledgements">
       <t>This draft is based on original idea described in <xref
       target="I-D.despres-softwire-sam"></xref>. The authors would like
-      to thank Remi Despres, Mark Townsley, Wojciech Dec, Olivier
-      Vautrin and Satoru Matsushima.</t>
+      to thank Remi Despres, Mark Townsley, Wojciech Dec and Olivier
+      Vautrin.</t>
     </section>
     
   </middle>
