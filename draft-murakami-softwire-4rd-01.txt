@@ -4,10 +4,10 @@
 Internet Engineering Task Force                              T. Murakami
 Internet-Draft                                               IP Infusion
 Intended status: Standards Track                                O. Troan
-Expires: January 2, 2012                                           cisco
+Expires: March 25, 2012                                            cisco
                                                            S. Matsushima
                                                                 SoftBank
-                                                               July 2011
+                                                      September 22, 2011
 
 
 IPv4 Residual Deployment on IPv6 infrastructure - protocol specification
@@ -36,7 +36,7 @@ Status of this Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 2, 2012.
+   This Internet-Draft will expire on March 25, 2012.
 
 Copyright Notice
 
@@ -52,9 +52,9 @@ Copyright Notice
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 1]
+Murakami, et al.         Expires March 25, 2012                 [Page 1]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    include Simplified BSD License text as described in Section 4.e of
@@ -108,9 +108,9 @@ Table of Contents
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 2]
+Murakami, et al.         Expires March 25, 2012                 [Page 2]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
 1.  Introduction
@@ -164,9 +164,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 3]
+Murakami, et al.         Expires March 25, 2012                 [Page 3]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    mapping function.  It is expected that the CE will, in turn, perform
@@ -220,9 +220,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 4]
+Murakami, et al.         Expires March 25, 2012                 [Page 4]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    CE IPv6 prefix:       The IPv6 prefix assigned to a CE by other means
@@ -276,9 +276,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 5]
+Murakami, et al.         Expires March 25, 2012                 [Page 5]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    For a given 4rd domain, the BR and CE MUST be configured with a set
@@ -332,9 +332,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 6]
+Murakami, et al.         Expires March 25, 2012                 [Page 6]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
          <---------------- CE IPv6 prefix (max 128) -------------->
@@ -388,9 +388,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 7]
+Murakami, et al.         Expires March 25, 2012                 [Page 7]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
                           <-- CE 4rd prefix length -->
@@ -444,9 +444,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 8]
+Murakami, et al.         Expires March 25, 2012                 [Page 8]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
                    <------- Port (16 bits) -------->
@@ -500,9 +500,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012                [Page 9]
+Murakami, et al.         Expires March 25, 2012                 [Page 9]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
 5.1.4.  From an IPv4 Address or IPv4 Address + Port to a CE IPv6 Address
@@ -556,9 +556,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 10]
+Murakami, et al.         Expires March 25, 2012                [Page 10]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
 6.  Encapsulation and Fragmentation Consideration
@@ -612,9 +612,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 11]
+Murakami, et al.         Expires March 25, 2012                [Page 11]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    that the destination port of a fragmented datagram is available only
@@ -668,9 +668,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 12]
+Murakami, et al.         Expires March 25, 2012                [Page 12]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
                          encapsulates the IPv4 packet in IPv6 and
@@ -724,9 +724,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 13]
+Murakami, et al.         Expires March 25, 2012                [Page 13]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
                          based on the mapping rule.  If the IPv6
@@ -780,9 +780,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 14]
+Murakami, et al.         Expires March 25, 2012                [Page 14]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    [RFC4787], [RFC5508] and [RFC5382].  When there are restricted
@@ -836,9 +836,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 15]
+Murakami, et al.         Expires March 25, 2012                [Page 15]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
    Denial-of-service attacks:  In 4rd domains where IPv4 addresses are
@@ -892,9 +892,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 16]
+Murakami, et al.         Expires March 25, 2012                [Page 16]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
 13.1.  Normative References
@@ -948,9 +948,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 17]
+Murakami, et al.         Expires March 25, 2012                [Page 17]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
               Boucadair, M., Matsushima, S., Lee, Y., Bonness, O.,
@@ -1004,9 +1004,9 @@ Internet-Draft          IPv4 Residual Deployment               July 2011
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 18]
+Murakami, et al.         Expires March 25, 2012                [Page 18]
 
-Internet-Draft          IPv4 Residual Deployment               July 2011
+Internet-Draft          IPv4 Residual Deployment          September 2011
 
 
 Authors' Addresses
@@ -1060,5 +1060,5 @@ Authors' Addresses
 
 
 
-Murakami, et al.         Expires January 2, 2012               [Page 19]
+Murakami, et al.         Expires March 25, 2012                [Page 19]
 
