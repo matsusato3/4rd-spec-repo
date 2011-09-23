@@ -211,10 +211,10 @@
 	other means than 4rd itself, and used by 4rd to derive a CE 4rd
 	prefix.</t>
 
-        <t hangText="CE IPv6 address:">The IPv6 address given to the
-        CE as part of normal IPv6 Internet access. This address is
-        used by a 4rd CE to create the 4rd prefix as well as to send
-        and receive IPv6-encapsulated IPv4 packets.</t>
+        <t hangText="CE IPv6 address:">In the context of 4rd, the IPv6
+        address used to reach the 4rd function of a CE from other CE's
+        and from BR's. The IID of this address differs from that of host
+        interface address that start with the CE IPv6 prefix.</t>
 
         <t hangText="CE 4rd prefix:">The 4rd prefix of the CE. It is
         derived from the CE IPv6 prefix by a mapping rule according to
@@ -256,7 +256,7 @@
 
       <t>For a given 4rd domain, the BR and CE MUST be configured with
       a set of mapping rules and BR IPv6 addresses. The configured
-      values for these elements MUST be identical for all CEs and BRs
+      values for these elements MUST be consistent for all CEs and BRs
       within a given 4rd domain.</t>
 
       <t>A mapping rule consist of the following elements: a Domain
@@ -520,7 +520,8 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	If the fragmented packets from different BRs happen to use the
 	same fragment ID, incorrect reassembly might occur. For this
 	reason, a BR using an anycast source address MUST NOT fragment
-        the IPv6 encapsulated packet.</t>
+    the IPv6 encapsulated packet unless BR's having identical rules
+    are required to use disjoint ranges of fragment ID.</t>
 
 	<t>If the MTU is well-managed such that the IPv6 MTU on the CE
 	WAN side interface is set so that no fragmentation occurs
@@ -530,6 +531,11 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	IPv6 MTU is known to be 1500 bytes, the 4rd Tunnel MTU might
 	be set to 1460 bytes.  Absent more specific information, the
 	4rd Tunnel MTU SHOULD default to 1280 bytes.</t>
+
+    <t>Alternatively, if BR's having identical rule are required
+    to use disjoint ranges of fragment ID, a BR using an anycast
+    source address SHOULD fragment the IPv6 encapsulated packet
+    correctly.</t>
 
 	<t>For 4rd domain traversal, IPv4 packets are encapsulated in
 	IPv6 packets whose Next header is set to 4 (i.e.  IPv4). If
@@ -834,7 +840,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 		target="RFC6056"></xref>. The attacks depend on guessing which
 		ports are currently used by target hosts. Using unrestricted port
 		set which mean that are IPv6 is exactly preferable. To avoid this
-		attacks using restricted port set, NAT44 filtering behavior must
+		attacks using restricted port set, NAT44 filtering behavior SHOULD
 		be "Address-Dependent Filtering".</t>
 	</list></t>
     </section>
