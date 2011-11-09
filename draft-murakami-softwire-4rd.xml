@@ -23,6 +23,8 @@
 <!ENTITY I-D.ymbk-aplusp SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ymbk-aplusp'>
 <!ENTITY I-D.operators-softwire-stateless-4v6-motivation SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.operators-softwire-stateless-4v6-motivation'>
 <!ENTITY I-D.mrugalski-dhc-dhcpv6-4rd SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.mrugalski-dhc-dhcpv6-4rd'>
+<!ENTITY I-D.mdt-softwire-mapping-address-and-port SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-mdt-softwire-mapping-address-and-port-01.xml'>
+<!ENTITY I-D.mdt-softwire-map-dhcp-option SYSTEM 'http://xml.resource.org/public/rfc/bibxml3/reference.I-D.draft-mdt-softwire-map-dhcp-option-01.xml'>
 
 ]>
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
@@ -42,7 +44,7 @@
     on IPv6 infrastructure - protocol specification</title>
 
 
-   <author fullname="Tetsuya Murakami" initials="T." surname="Murakami">
+   <author fullname="Tetsuya Murakami" initials="T." surname="Murakami" role="editor">
       <organization>IP Infusion</organization>
       <address>
 	    <postal>
@@ -93,7 +95,7 @@
       </address>
     </author>
 
-    <date month="September" year="2011" />
+    <date month="November" year="2011" />
 
     <area>Internet</area>
     <workgroup>Internet Engineering Task Force</workgroup>
@@ -133,22 +135,25 @@
       network in a way that does not require protocol translation
       between IPv4 and IPv6.</t>
 
-      <t>4rd utilizes an algorithmic mapping between the IPv6 and IPv4
-      addresses that are assigned for use within the SP network. This
-      mapping provides automatic determination of IPv6 tunnel
-      endpoints from IPv4 destination addresses, allowing the
+      <t>4rd utilizes an algorithmic mapping defined in
+      <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+      between the IPv6 and IPv4 addresses that are assigned for use
+      within the SP network. This mapping provides automatic determination
+      of IPv6 tunnel endpoints from IPv4 destination addresses, allowing the
       stateless operation of 4rd. 4rd views the IPv6 network as a link
       layer for IPv4 and supports an automatic tunneling abstraction
       similar to the Non-Broadcast Multiple Access (NBMA) <xref
       target="RFC2491"></xref> model.</t>
 
-      <t>The 4rd algorithmic mapping is also used to automatically
-      provision IPv4 addresses and allocating a set of non-overlapping
-      ports for each 4rd CE.  The "SP-facing" (i.e., "WAN") side of
-      the 4rd CE, operate as native IPv6 interface with no need for
-      IPv4 operation or support. On the "end-user-facing" (i.e.,
-      "LAN") side of a CE, IPv6 and IPv4 are implemented as for any
-      native dual-stack service delivered by the SP.</t>
+      <t>The 4rd algorithmic mapping defined in <xref
+      target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+      is also used to automatically provision IPv4 addresses and
+      allocating a set of non-overlapping ports for each 4rd CE. 
+      The "SP-facing" (i.e., "WAN") side of the 4rd CE, operate as
+      native IPv6 interface with no need for IPv4 operation or support.
+      On the "end-user-facing" (i.e., "LAN") side of a CE, IPv6 and IPv4
+      are implemented as for any native dual-stack service delivered by
+      the SP.</t>
 
       <t>A 4rd domain consists of 4rd Customer Edge (CE) routers and
       one or more 4rd Border Relays (BRs). IPv4 packets encapsulated
@@ -159,19 +164,19 @@
       stateless, BRs may be reached using anycast for failover and
       resiliency.</t>
 
-      <t>4rd does not require any stateful NAPT <xref
-      target="RFC3022"></xref> functions at the BRs or elsewhere
-      within the SP network. Instead, 4rd allows for sharing of IPv4
-      addresses among multiple sites by automatically allocating a set
-      of non-overlapping ports for each CE as part of the stateless
-      mapping function. It is expected that the CE will, in turn,
-      perform local IPv4 Network Address and Port Translation (NAPT)
-      <xref target="RFC3022"></xref> functions for the site as is
-      commonly performed today, except avoiding ports outside of the
-      allocated port set. Although 4rd is designed primarily to
-      support IPv4 deployment to a customer site (such as a
-      residential home network) by an SP, it can equally be applied to
-      an individual host acting as a CE router.</t>
+      <t>4rd does not require any stateful NAPT <xref target="RFC3022">
+      </xref> functions at the BRs or elsewhere within the SP network.
+      Instead, 4rd allows for sharing of IPv4 addresses among multiple
+      sites by automatically allocating a set of non-overlapping ports
+      for each CE as part of the stateless mapping function defined in
+      <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>.
+      It is expected that the CE will, in turn, perform local IPv4
+      Network Address and Port Translation (NAPT) <xref target="RFC3022">
+      </xref> functions for the site as is commonly performed today,
+      except avoiding ports outside of the allocated port set. Although
+      4rd is designed primarily to support IPv4 deployment to a customer
+      site (such as a residential home network) by an SP, it can equally
+      be applied to an individual host acting as a CE router.</t>
     </section>
 
     <section title="Requirements Language">
@@ -186,7 +191,10 @@
 	<t hangText="4rd domain (Domain):">A set of 4rd CEs and BRs
 	connected to the same virtual 4rd link. A service provider may
 	deploy 4rd with a single 4rd domain, or may utilize multiple
-	4rd domains. Each domain requires a separate 4rd prefix.</t>
+	4rd domains. Each domain requires a separate 4rd prefix. This
+        is equivalent to MAP domain defined in <xref
+        target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
 	<t hangText="4rd Border Relay (BR):">A 4rd-enabled router
 	managed by the service provider at the edge of a 4rd domain.
@@ -195,7 +203,9 @@
 	acting as an endpoint for the 4rd IPv4 in IPv6 tunnel, and an
 	IPv4 interface connected to the native IPv4 network. A 4rd BR
 	may also be referred to simply as a "BR" within the context of
-	4rd.</t>
+	4rd. This is equivalent to MAP Border Relay defined in <xref
+        target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
 	<t hangText="4rd Customer Edge (CE):">A device functioning as
 	a Customer Edge router in a 4rd deployment. In a residential
@@ -205,11 +215,15 @@
 	residential site has one WAN side interface, one or more LAN
 	side interfaces, and a 4rd virtual interface. A 4rd CE may
 	also be referred to simply as a "CE" within the context of
-	4rd.</t>
+	4rd. This is equivalent to MAP Customer Edge defined in <xref
+        target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
         <t hangText="CE IPv6 prefix:">The IPv6 prefix assigned to a CE by
 	other means than 4rd itself, and used by 4rd to derive a CE 4rd
-	prefix.</t>
+	prefix.i  This is equivalent to End-user IPv6 prefix defined in
+        <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
         <t hangText="CE IPv6 address:">In the context of 4rd, the IPv6
         address used to reach the 4rd function of a CE from other CE's
@@ -218,10 +232,11 @@
 
         <t hangText="CE 4rd prefix:">The 4rd prefix of the CE. It is
         derived from the CE IPv6 prefix by a mapping rule according to
-        <xref target="mapping-rules"></xref>. Depending on its length,
-        it is an IPv4 prefix, an IPv4 address, or a shared IPv4
-        address followed by a Port-set ID (<xref
-        target="port-set-id"></xref>).</t>
+        <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>.
+        Depending on its length, it is an IPv4 prefix, an IPv4 address,
+        or a shared IPv4 address followed by a Port-set ID (
+        <xref target="port-set-id"></xref>
+        ).</t>
 
         <t hangText="Port-set ID:">In a CE 4rd prefix longer than 32
         bits, bits that follow the first 32.  It algorithmically
@@ -229,19 +244,27 @@
         specified in Section <xref target="port-set-id"></xref>, the set
         can comprise up to 4 disjoint port ranges.</t>
 
-        <t hangText="Domain IPv6 prefix:">An IPv6 prefix assigned by an ISP to
-	a 4rd domain.</t>
+        <t hangText="Domain IPv6 prefix:">An IPv6 prefix assigned by an ISP
+        to a 4rd domain. This is equivalent to Rule IPv6 prefix defined
+        in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
         <t hangText="Domain IPv4 prefix:">A 4rd prefix assigned by an
-        ISP to the 4rd domain.</t>
+        ISP to the 4rd domain. This is equivalent to Rule IPv4 prefix
+        defined in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
         <t hangText="IPv4 Embedded Address (EA) bits:">The IPv4
         EA-bits in the IPv6 address identify an IPv4 prefix, IPv4
-        address or part of IPv4 address and port set.</t>
+        address or part of IPv4 address and port set. This is also
+        defined in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
 	<t hangText="Shared IPv4 address:">An IPv4 address that is
 	shared among multiple nodes. Each node has a separate part of
-	the transport layer port space.</t>
+	the transport layer port space. This is also defined in <xref
+        target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        </t>
 
       </list></t>
     </section>
@@ -255,42 +278,43 @@
       CE for the customer site when IPv6 service is obtained.</t>
 
       <t>For a given 4rd domain, the BR and CE MUST be configured with
-      a set of mapping rules and BR IPv6 addresses. The configured
-      values for these elements MUST be consistent for all CEs and BRs
-      within a given 4rd domain.</t>
+      a set of mapping rules defined in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+      and BR IPv6 addresses. The configured values for these elements
+      MUST be consistent for all CEs and BRs within a given 4rd domain.
+      </t>
 
       <t>A mapping rule consist of the following elements: a Domain
-      IPv6 prefix and prefix length, a Domain 4rd prefix and prefix
-      length, CE IPv6 Prefix length, and a Domain IPv6 suffix and length.
-      See <xref target="mapping-rules">section</xref> for a detailed
-      description of mapping rules.</t>
+      IPv6 prefix (Rule IPv6 prefix) and prefix length, a Domain IPv4 
+      prefix (Rule IPv4 prefix) and prefix length, EA-bits length which
+      can be caluculated with the formula of CE IPv6 Prefix length minus
+      Domain IPv6 prefix length, and a Domain IPv6 suffix and suffix
+      length. Refer to <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+      for a furthur detail description of the mapping rules.</t>
 
       <section title="Customer Edge Configuration">
-
 	<t>The 4rd configuration elements are set to values that are the
-	same across all CEs within a 4rd domain. The values may be
-	configured in a variety of manners, including provisioning methods
-	such as the Broadband Forum's "TR-69" [TR069] Residential Gateway
-	management interface, an XML-based object retrieved after IPv6
-	connectivity is established, a DNS record, an SMIv2 MIB [RFC2578],
-	or manual configuration by an administrator. A companion document 
-	<xref target='I-D.mrugalski-dhc-dhcpv6-4rd'></xref>describes how to
-	configure the necessary parameters via IPv6 DHCP. A CE that allows
-	IPv6 configuration by IPv6 DHCP SHOULD implement this option. Other
-	configuration and management methods may use the format described by
-	this option for consistency and convenience of implementation on CEs
+	same across all CEs within a 4rd domain. The values may be configured
+        in a variety of manners, including provisioning methods such as
+        the Broadband Forum's "TR-69" [TR069] Residential Gateway management
+        interface, an XML-based object retrieved after IPv6 connectivity is
+        established, a DNS record, an SMIv2 MIB [RFC2578], or manual
+        configuration by an administrator. A companion document 
+	<xref target="I-D.mdt-softwire-map-dhcp-option"></xref> describes
+        how to configure the necessary parameters via IPv6 DHCP. A CE that
+        allows IPv6 configuration by IPv6 DHCP SHOULD implement this option.
+        Other configuration and management methods may use the format described
+        by this option for consistency and convenience of implementation on CEs
 	that support multiple configuration methods.</t>
 
 	<t>The only remaining provisioning information the CE requires
-	in order to calculate the 4rd address and enable IPv6
-	connectivity is an IPv6 prefix for the CE. This CE IPv6 prefix
-	is configured as part of obtaining IPv6 Internet access (i.e.,
-	configured via SLAAC, DHCPv6, DHCPv6 PD, or otherwise).</t>
+	in order to calculate the 4rd address and enable IPv6 connectivity
+        is an IPv6 prefix for the CE. This CE IPv6 prefix is configured as
+        part of obtaining IPv6 Internet access (i.e., configured via SLAAC,
+        DHCPv6, DHCPv6 PD, or otherwise).</t>
 
-	<t>A single 4rd CE MAY be connected to more than one 4rd
-	domain. Each domain a given CE operates within would require
-	its own set of 4rd configuration elements and would generate
-	its own 4rd address.</t>
+	<t>A single 4rd CE MAY be connected to more than one 4rd domain.
+        Each domain a given CE operates within would require its own set
+        of 4rd configuration elements and would generate its own 4rd address.</t>
 
       </section>
     </section>
@@ -298,9 +322,16 @@
     <section anchor="mapping-rule-parameters" title="Algorithmic mapping">
 
       <section anchor="mapping-rules" title="Mapping Rules">
+        <t>The mapping rule for 4rd is described in <xref
+        target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+        .</t>
+
         <section anchor="mapping-prefix" title="From a CE IPv6 Prefix to a CE 4rd Prefix">
-          <t>A 4rd mapping rule establishes a 1:1 mapping between CE IPv6 prefixes
-   	  and CE 4rd prefixes.</t>
+          <t>A 4rd mapping rule establishes a 1:1 mapping between CE
+          IPv6 prefixes and CE 4rd prefixes. This is described in the
+          section "Basic mapping rule (BMR)" of
+          <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+          .</t>
 
           <figure align="center" anchor="prefix-fig" title="From a CE IPv6 Prefix to a CE 4rd Prefix">
             <preamble></preamble>
@@ -337,11 +368,11 @@
         </section>
 
         <section anchor="port-set-id" title="From a CE 4rd Prefix to a Port-set ID">
-	  <t>Depending on its length, a CE 4rd prefix is either an IPv4 prefix, a
-     	  full IPv4 address, or a shared IPv4 address followed by a Port-set ID
-          (<xref target="port-set-id-fig"></xref>). If it includes a port set ID,
-	  this ID specifies which ports are assigned to the the CE for its exclusive
-	  use (<xref target="port-set"></xref>).</t>
+	  <t>Depending on its length, a CE 4rd prefix is either an IPv4 prefix,
+          a full IPv4 address, or a shared IPv4 address followed by a Port-set
+          ID (<xref target="port-set-id-fig"></xref>). If it includes a port set
+          ID, this ID specifies which ports are assigned to the the CE for its
+          exclusive use (<xref target="port-set"></xref>).</t>
 
           <figure align="center" anchor="port-set-id-fig" title="Variants of CE 4rd prefixes">
             <preamble></preamble>
@@ -361,11 +392,11 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
                      <--------------- 32 ------------->
 
 
-                     <----------- CE 4rd prefix length ---------->
-                     +-------------------------------+-----------+
-    33 to 47 bits    |      IPv4 shared address      |Port-set ID|
-                     +-------------------------------+-----------+
-                     <--------------- 32 -----------><- max 15 -->
+                     <----------- CE 4rd prefix length ----------->
+                     +--------------------------------+-----------+
+    33 to 47 bits    |      IPv4 shared address       |Port-set ID|
+                     +--------------------------------+-----------+
+                     <--------------- 32 -------------><- max 15 ->
             ]]></artwork>
 
           </figure>
@@ -383,9 +414,15 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	  -->
 
 	  <t>The value of a Port-set ID specifies which ports can be
-	  used by a transport layer protocol (UDP, TCP, SCTP
-	  etc). Design constraint of the algorithm are the
-	  following:</t>
+	  used by a transport layer protocol (UDP, TCP, SCTP etc). The
+          port set should be generated based on the Port-Set ID. The
+          algorithm for generating the port set is defined in the
+          section "Port mapping algorithm" of <xref
+          target="I-D.mdt-softwire-mapping-address-and-port"></xref>.
+          </t>
+
+          <!--
+          Design constraint of the algorithm are the following:</t>
 
           <t><list hangIndent="22" style="hanging">
 	    <t hangText="Fairness with respect to special-value ports:">
@@ -395,10 +432,9 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
 	    For a Port-set-ID's having the same length, all sets must have
             the same number of ports.</t>
 
-	    <t hangText="Exhaustiveness">
-	    For any Port-set-ID length, the aggregate of port sets
-	    assigned for all values must include all ordinary-value
-	    ports.</t>
+	    <t hangText="Exhaustiveness"> For any Port-set-ID length, the
+            aggregate of port sets assigned for all values must include
+            all ordinary-value ports.</t>
 	  </list></t>
 
 	  <t>If the Port-set ID has 1 to 12 bits, the set comprises 4 port ranges.
@@ -406,43 +442,23 @@ Shorter than 32 bits |       IPv4 prefix        | ... |
           made of a range-specific "head" followed by the Port-set ID.  Head
           values are in binary 1, 01, 001, and 0001.  They are chosen to
           exclude ports 0-4095 and only them.</t>
+          -->
 
-          <figure align="center" anchor="port-range-fig" title="From Port-set ID to Port ranges">
-            <preamble></preamble>
-            <artwork align="center"><![CDATA[
-                <------- Port (16 bits) -------->
-                +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Port-range a    |1|x x x x x x x x|             |  0xF780 - 0xF7FF
- (head = 1)     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                   \               \
-                +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Port-range b    |0 1|x x x x x x x x|           |  0x7BC0 - 0x7BFF
- (head = 01)    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                     \               \
-                +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Port-range c    |0 0 1|x x x x x x x x|         |  0x3DE0 - 0x3DFF
- (head = 001)   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                       \               \
-                +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
- (head = 0001)  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-                <- head-><--Port-set ID->                 /\
-                <-- Port-range prefix --><-tail->         ||
-                                                          ||
-                                             Example of Port-ranges
-                                           if the Port-set ID is 0xEF
-            ]]></artwork>
-          </figure>
+          <!-- deleted the port-range-fig" -->
 
+          <!--
 	  <t>In the Port-set ID has 13 bits, only the 3 port ranges are assigned,
           having heads 1, 01, and 001.  If it has 14 bits, only the 2 port
    	  ranges having heads 1 and 01 are assigned. If it has 15 bits, only
    	  the port range having head 1 is assigned. (In these three cases, the
    	  smallest port range has only one element).</t>
+          -->
 
 	</section>
 
 	<section anchor="address-mapping" title="From an IPv4 Address or IPv4 Address + Port to a CE IPv6 Address">
+          <t>This is described in the section "Forwarding mapping rule (FMR)"
+          in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>.</t>
 	  
           <figure align="center" anchor="address-mapping-fig" title="From 4rd Prefix to IPv6 address (shared IPv4 address case)">
             <preamble></preamble>
@@ -461,7 +477,7 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
                    :   \/   : Domain IPv6 suffix
                    :        :  |
 +------------------+--------+--|-+----------------------------------+
-|Domain IPv6 prefix| EA-bits|  ' |                  0               |
+|Domain IPv6 prefix| EA-bits|  ' |         Interface ID             |
 +------------------+--------+----+----------------------------------+
 <------------ max 64 ------------>
 <---------------------- CE IPv6 address (128) --------------------->
@@ -494,6 +510,10 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
           bits to make a complete IPv6 address (<xref target="RFC4291"></xref>.
 	  <xref target="address-mapping-fig"></xref>
           illustrates this process in the case of a shared IPv4 address.</t>
+
+          <t>An interface ID should be generated based on the section "Use
+          of the IPv6 Interface identifier" in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+          .</t>
 	</section>
       </section>
       </section>
@@ -520,8 +540,8 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	If the fragmented packets from different BRs happen to use the
 	same fragment ID, incorrect reassembly might occur. For this
 	reason, a BR using an anycast source address MUST NOT fragment
-    the IPv6 encapsulated packet unless BR's having identical rules
-    are required to use disjoint ranges of fragment ID.</t>
+        the IPv6 encapsulated packet unless BR's having identical rules
+        are required to use disjoint ranges of fragment ID.</t>
 
 	<t>If the MTU is well-managed such that the IPv6 MTU on the CE
 	WAN side interface is set so that no fragmentation occurs
@@ -532,10 +552,10 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	be set to 1460 bytes.  Absent more specific information, the
 	4rd Tunnel MTU SHOULD default to 1280 bytes.</t>
 
-    <t>Alternatively, if BR's having identical rule are required
-    to use disjoint ranges of fragment ID, a BR using an anycast
-    source address SHOULD fragment the IPv6 encapsulated packet
-    correctly.</t>
+        <t>Alternatively, if BR's having identical rule are required
+        to use disjoint ranges of fragment ID, a BR using an anycast
+        source address SHOULD fragment the IPv6 encapsulated packet
+        correctly.</t>
 
 	<t>For 4rd domain traversal, IPv4 packets are encapsulated in
 	IPv6 packets whose Next header is set to 4 (i.e.  IPv4). If
@@ -576,6 +596,38 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 	to a given CE. Note that replacing a Datagram ID in an IPv4 header
 	implies an update of its Header-checksum fieald, by adding to it the
 	one's complement difference between the old and the new values.</t>
+      </section>
+
+      <section anchor="forwarding" title="Packet Forwarding consideration">
+        <section anchor="mesh" title="Mesh model">
+          <t>Basically, 4rd should allow the mesh model in order for all CEs
+          to communicate each others directly. If one mapping rules is applied
+          to a given 4rd domain, all CEs can communicate each others directly.
+          If multiple mapping rules are applied to a given 4rd domain, or if
+          multiple 4rd dmains are existed, CE can communicate each others
+          directly only if all CEs know all mapping rules. When a CE receives
+          an IPv4 packet from its LAN side, the CE looks up a mapping rule
+          corresponding to an IPv4 destination address in the received IPv4
+          packet. If the corresponding mapping rule is found, CE can communicate
+          to another CE directly based on the mapping rule defined as Forwarding
+          mapping rule (FMR) in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+          . If the corresponding mapping rule is not found, CE must forward the
+          packet to a given BR.</t>
+        </section>
+        <section anchor="hub-spoke" title="Hub & Spoke model">
+          <t>In order to allow the mesh topology so that all CEs can communicate
+          each others directly, all CE should know all mapping rules applied to
+          a given 4rd domain or 4rd domains. However, if a CE knows only subset
+          of mapping rules applied to a given 4rd domain or 4rd domains, a CE can
+          not communicate to some CEs due to the lack of mapping rules. In this 
+          case, an IPv4 packet toward to these CEs must be forwarded to a given
+          BR. In order to achieve the hub & spoke mode fully, Forwarding mapping
+          rule (FMR) defined in <xref target="I-D.mdt-softwire-mapping-address-and-port"></xref>
+          should be disabled. In this case, all CEs do not look up the mapping
+          rules upon receiving an IPv4 packet from its LAN side and then CE must
+          encapsulate the IPv4 packet with IPv6 whose destination must be a given
+          BR.</t>
+        </section>
       </section>
 
       <section anchor="behavior" title="BR and CE behaviors">
@@ -862,6 +914,8 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
 
   <back>
     <references title="Normative References">
+      &I-D.mdt-softwire-mapping-address-and-port;
+      &I-D.mdt-softwire-map-dhcp-option;
       &RFC0791;
       &RFC2119;
       &RFC2460;
@@ -885,7 +939,6 @@ Port-range d    |0 0 0 1|x x x x x x x x|       |  0x1EF0 - 0x1EFF
       &RFC5969;
       &RFC6056;
       &I-D.operators-softwire-stateless-4v6-motivation;
-      &I-D.mrugalski-dhc-dhcpv6-4rd;
     </references>
 
     <!-- Change Log
